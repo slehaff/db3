@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
+    'bootstrap_themes',
     'db3',
     'calibrate',
     'predict',
