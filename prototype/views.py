@@ -13,17 +13,20 @@ def testforms(request):
     return render(request, 'testforms.html', context)
 
 
-def gettest(request):
-    print('got it!!!')
-
-
 def get_steps(request):
-    print('getting steps!!')
+    # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
         form = StepForm(request.POST)
+        # check whether it's valid:
         if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
             return HttpResponseRedirect('/thanks/')
+
+    # if a GET (or any other method) we'll create a blank form
     else:
         form = StepForm()
-    
-    return render(request, 'testform.html', {'form': form})
+
+    return render(request, 'testforms.html', {'form': form})

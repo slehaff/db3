@@ -1,59 +1,27 @@
 {%extends 'base.html'%}
 {%block content%}
 <div class="jumbotron text-center">
-    <h1>JigII Test</h1>
-    <p>Testing jigII functionality</p>
+    <h1>My Prototype Page</h1>
+    <p>Resize this responsive page to see the effect!</p>
   </div>
+  
   <div class="container">
     <div class="row">
       <div class="col-sm-4">
-        <h3>Form Test</h3>
-        <form action= "/steps/" method="post">
-          {% csrf_token %}
-          {{ form}}
-          <input type="submit" value="Submit">
-        </form>
+        <h3>Home Column 1</h3>
+        <p>Lorem ipsum dolor..</p>
       </div>
       <div class="col-sm-4">
-        <h3>Led Control</h3>
-        <form>
-          <div class="form-group">
-            <label for="testLed">Led level</label>
-            <input type="integer" class="form-control" id="testLed" aria-describedby="Help" placeholder="Enter led level">
-            <small id="Help" class="form-text text-muted">You should enter led level</small>
-          </div>
-          <div class="form-group">
-            <label for="ledIntens">Led Intensity</label>
-            <input type="integer" class="form-control" id="ledIntens" placeholder="enter led intensity">
-          </div>
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <h3>Home Column 2</h3>
+        <p>Lorem ipsum dolor..</p>
       </div>
       <div class="col-sm-4">
-        <h3>Step Control</h3>
-        <form>
-          <div class="form-group">
-            <label for="TestStepMotor">Step Count</label>
-            <input type="integer" class="form-control" id="TestStepMotor" aria-describedby="Help" placeholder="Enter Step count">
-            <small id="Help" class="form-text text-muted">You should enter the step count</small>
-          </div>
-          <div class="form-group">
-            <label for="stepRate">Step Rate</label>
-            <input type="integer" class="form-control" id="stepRate" placeholder="step rate">
-          </div>
-          <div class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+        <h3>Home Column 3</h3>
+        <p>Lorem ipsum dolor..</p>
       </div>
     </div>
-
+  </div>
+ 
 
     {%endblock%}
   
