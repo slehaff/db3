@@ -4,12 +4,15 @@
     <h1>JigII Test</h1>
     <p>Testing jigII functionality</p>
   </div>
-  
   <div class="container">
     <div class="row">
       <div class="col-sm-4">
-        <h3>Column 2.1</h3>
-        <p>Lorem ipsum dolor..</p>
+        <h3>Form Test</h3>
+        <form action= "/steps/" method="post">
+          {% csrf_token %}
+          {{ form}}
+          <input type="submit" value="Submit">
+        </form>
       </div>
       <div class="col-sm-4">
         <h3>Led Control</h3>
