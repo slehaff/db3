@@ -5,14 +5,20 @@ from .forms import StepForm
 
 def prototype(request):
     if request.method == 'POST':
-        # create a form instance and populate it with data from the reque
-        #if request.POST.get() # Check hvilke submit knap er trykket
-        print("Post It")
+        # create a form instance and populate it with data from the request:
+        tform = StepForm(request.POST)
+        # check whether it's valid:
+        if tform.is_valid():
+            print(tform.cleaned_data)
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            tform = StepForm()
+            # return HttpResponse('/thanks/')
     else:
         'empty form'
         tform = StepForm()
-        tform2 = StepForm()
-    context = {"prototype_page": "active", 'tform': tform,'tform2': tform2 }
+    context = {"prototype_page": "active", 'tform': tform}
     return render(request, 'prototype.html', context)
 
 
