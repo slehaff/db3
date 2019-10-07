@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import StepForm
+from .pylib import messenger
 
 
 def prototype(request):
@@ -9,7 +10,8 @@ def prototype(request):
         tform = StepForm(request.POST)
         # check whether it's valid:
         if tform.is_valid():
-            print(tform.cleaned_data)
+            stepdata = tform.cleaned_data['step_count']
+            messenger.proto_mess(stepdata)
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
