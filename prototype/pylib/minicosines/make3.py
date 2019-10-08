@@ -3,13 +3,13 @@ import numpy as np
 from PIL import Image
 # from scan.pylib.gamma import *
 
-width = 720
-height = 400
+width = 4096
+height = 2732
 periods = 1
-hf_periods = 10
-stampwidth = 160
-stampheight = 120
-stampborder = 5
+hf_periods = 8
+stampwidth = 400
+stampheight = 400
+stampborder = 200
 widthcount = 4
 heightcount = 3
 squares = 12
@@ -50,6 +50,7 @@ def makestamps(stampcount, wvcount, phi, folder):
     stampimage = makeimage(stampwidth, stampheight, wvcount, phi)
     for i in range(stampcount):
         startx, starty = getstart(i)
+        print(i, startx, starty)
         copystamp(startx, starty, stampimage, wholeima)
     wholeima = np.transpose(wholeima)
     cv2.imwrite(folder + str(phi + 1) + '_cos.jpg', wholeima)
@@ -78,7 +79,7 @@ def makeblack(w, h, value, folder):
 # file = '/home/samir/db2/scan/static/scan_folder/gamma_im_folder/image1.png'
 # gamma_correct = compensate_gamma(file)
 
-folder = "/home/samir/db2/scan/cosines/minicosines/"
+folder = "/home/samir/db3/prototype/pylib/minicosines/"
 makestamps(squares, hf_periods, -1,folder)
 makestamps(squares, hf_periods, 0,folder)
 makestamps(squares, hf_periods, 1,folder)

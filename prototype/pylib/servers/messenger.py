@@ -2,10 +2,10 @@ import socket
 import pickle
 import struct
 
-IP = '192.168.0.50'
-IP = '127.0.0.1'
+IP = '192.168.0.39'
+# IP = '127.0.0.1'
 port = 5005
-port = 6789
+# port = 6789
 
 
 def message1():

@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import StepForm
-from .pylib import messenger
+from .pylib.servers import messenger
+from .pylib.servers.picam import new_receiver_thread
+import os
+
 
 
 def prototype(request):
@@ -11,7 +14,10 @@ def prototype(request):
         # check whether it's valid:
         if tform.is_valid():
             stepdata = tform.cleaned_data['step_count']
-            messenger.proto_mess(stepdata)
+            print(stepdata)
+            # messenger.proto_mess(stepdata)
+            messenger.scan_mess()
+            take_scan()
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
@@ -22,6 +28,23 @@ def prototype(request):
         tform = StepForm()
     context = {"prototype_page": "active", 'tform': tform}
     return render(request, 'prototype.html', context)
+
+
+def take_scan():
+    print('take scan')
+    folder = '/home/samir/db3/prototype/static/scan_folder/scan_im_folder/'
+    t = new_receiver_thread('1', folder=folder)
+    print('scan receiver started')
+    print('start take')
+    # scan_mess()
+    t.join()
+    # folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
+    # # trim_files(folder)
+    # scan_wrap(folder=folder)
+    return 
+
+# **********************************  NOt Used !!!! **********************************************
+
 
 
 def testforms(request):
@@ -59,3 +82,4 @@ def get_steps(request):
         form = StepForm()
 
     return render(request, 'testforms.html', {'form': form})
+
