@@ -1,0 +1,28 @@
+{%extends 'base.html'%}
+{%block content%}
+<div class="jumbotron text-center">
+    <h1>My Scan Page</h1>
+    <p>Resize this responsive page to see the effect!</p>
+  </div>
+  
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3>Home Column 1&2</h3>
+        <form action="{% url 'scan' %}" method="post">
+          {% csrf_token %}
+          {{ sform }}
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+
+      <div class="col-sm-4">
+        <h3>Home Column 3</h3>
+        <p>Scan ipsum dolor..</p>
+      </div>
+    </div>
+  </div>
+ 
+
+    {%endblock%}
+  
