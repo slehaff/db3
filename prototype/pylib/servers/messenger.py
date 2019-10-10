@@ -33,9 +33,11 @@ def proto_mess(inp):
     sock.sendto(message, (IP, port))
 
 
-def scan_mess():
+def steps_mess(inp):
     print('NewIP, port:', IP, port)
-    message = b'scan'
+    # data = struct.pack('!d', inp)  # float -> bytes
+    mystr = 'steps'+str(inp)
+    message = mystr.encode('UTF-8')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(message, (IP, port))
 

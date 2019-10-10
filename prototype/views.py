@@ -16,8 +16,8 @@ def prototype(request):
             stepdata = tform.cleaned_data['step_count']
             print(stepdata)
             # messenger.proto_mess(stepdata)
-            messenger.scan_mess()
-            take_scan()
+            messenger.steps_mess(stepdata)
+            # take_scan()
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:
