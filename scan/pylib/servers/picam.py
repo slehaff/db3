@@ -9,7 +9,7 @@ import os
 
 
 def mov_files(dir_to):
-    path = '/home/samir/db3/prototype/static/scan_folder/im_folder/'
+    path = '/home/samir/db3/scan/static/scan_folder/im_folder/'
     moveto = dir_to
     files = os.listdir(path)
     print(files)
@@ -57,7 +57,7 @@ def new_receive_pi_data(n, to_folder):
             print('received image!')
             #dec_img = dec_img[100:400, 30:530]
             i += 1
-            folder = '/home/samir/db3/prototype/static/scan_folder/im_folder/'
+            folder = '/home/samir/db3/scan/static/scan_folder/im_folder/'
             cv2.imwrite(folder + '/image' + str(i-1)+'.png', dec_img)
             print('i=', i, image_len, dec_img.shape)
     finally:
