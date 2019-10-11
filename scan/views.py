@@ -8,11 +8,31 @@ import os
 from scan.pylib.makewrap import *
 from scan.pylib.unwrap import *
 # from scan.pylib.pointcloud import *
-# from scan.pylib.jsoncloud import *
+from scan.pylib.jsoncloud import *
 
 import shutil
 import json
 from distutils.dir_util import copy_tree
+
+def scan_wrap(folder):
+    print('scan_wrap started')
+    print(folder)
+    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', 1)
+    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 4)
+
+
+def unwrap(request):
+    # folder = ScanFolder.objects.last().folderName
+    folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
+    ref_folder = '/home/samir/db2/scan/static/scan_folder/scan_ref_folder'
+    three_folder = '/home/samir/db2/3D/static/3scan_folder'
+    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
+    # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
+    generate_json_pointcloud(folder + 'image1.png', folder +
+                             '/abs_unwrap.png', three_folder + '/pointcl.json')
+    return render(request, 'scantemplate.html')
+
 
 
 
