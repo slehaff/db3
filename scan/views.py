@@ -17,8 +17,9 @@ from distutils.dir_util import copy_tree
 def scan_wrap(folder):
     print('scan_wrap started')
     print(folder)
-    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', 1)
-    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 4)
+    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    print('low done!')
+    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 2)
 
 
 def unwrap(request):
@@ -67,7 +68,5 @@ def take_scan():
     print('start take')
     # scan_mess()
     t.join()
-    # folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
-    # # trim_files(folder)
-    # scan_wrap(folder=folder)
+    scan_wrap(folder=folder)
     return 
