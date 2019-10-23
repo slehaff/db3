@@ -34,6 +34,10 @@ def unwrap(request):
                              '/abs_unwrap.png', three_folder + '/pointcl.json')
     return render(request, 'scantemplate.html')
 
+def unwrap2():
+    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    return
 
 
 
@@ -48,6 +52,7 @@ def scan(request):
             # messenger.proto_mess(stepdata)
             messenger.scan_mess()
             take_scan()
+            unwrap2()
             # process the data in form.cleaned_data as required
             # ...
             # redirect to a new URL:

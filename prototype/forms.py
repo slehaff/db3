@@ -1,7 +1,7 @@
 from django import forms
 
 class StepForm(forms.Form):
-    step_count = forms.IntegerField( max_value= 4096, min_value= -4096, label= 'enter step count:')
+    step_count = forms.IntegerField( max_value= 6400, min_value= -6400, label= 'enter step count:')
     voltage = forms.FloatField(max_value= 3, min_value= .2, label= 'enter voltage:', required = False)
     def clean_stepcount(self):
         data = self.cleaned_data['step_count']
