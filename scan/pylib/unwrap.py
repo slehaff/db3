@@ -5,8 +5,9 @@ import sys
 import os
 from PIL import Image
 
-high_freq = 16
-rwidth = 640
+high_freq = 7
+low_freq = 1
+rwidth = 320
 rheight = 480
 
 
@@ -32,7 +33,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     for i in range(rheight):
         for j in range(rwidth):
             kdata[i, j] = round(
-                (high_freq * 1.0 * wrap1data[i, j] - 1.0 * wrap2data[i, j])/2.0)
+                (high_freq/low_freq * 1.0 * wrap1data[i, j] - 1.0 * wrap2data[i, j])/2.0)
             unwrapdata[i, j] = (1.0 * wrap2data[i, j] +
                                 2.0*kdata[i, j]*np.pi)/2
 
