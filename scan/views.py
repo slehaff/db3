@@ -49,15 +49,19 @@ def scan(request):
         if sform.is_valid():
             scandata = sform.cleaned_data['scan_type']
             print(scandata)
-            # messenger.proto_mess(stepdata)
-            messenger.scan_mess()
-            take_scan()
-            unwrap2()
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            sform = ScanForm()
-            # return HttpResponse('/thanks/')
+            if scandata == 4:
+                messenger.gamma_mess()
+                print('take gamma')
+                take_gamma()
+            else:
+                messenger.scan_mess()
+                take_scan()
+                unwrap2()
+                # process the data in form.cleaned_data as required
+                # ...
+                # redirect to a new URL:
+                sform = ScanForm()
+                # return HttpResponse('/thanks/')
     else:
         'empty form'
         sform = ScanForm()
@@ -75,3 +79,15 @@ def take_scan():
     t.join()
     scan_wrap(folder=folder)
     return 
+
+def take_gamma():
+    print('take gamma!')
+    folder = '/home/samir/db3/scan/static/scan_folder/gamma_folder/'
+    t = new_receiver_thread('1', folder=folder)
+    print('gamma receiver started')
+    print('gamma take')
+    # scan_mess()
+    t.join()
+    # scan_wrap(folder=folder)
+
+    return
