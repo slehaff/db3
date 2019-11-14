@@ -1,7 +1,10 @@
 import cv2
 import numpy as np
 from PIL import Image
-# from scan.pylib.gamma import *
+from PIL import ImageFont
+from PIL import ImageDraw
+import sys
+ 
 
 width = 4096
 height = 2732
@@ -14,29 +17,62 @@ widthcount = 4
 heightcount = 3
 squares = 12
 
+def addtext(filename, text):
+    img = Image.open(filename)
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 28)
+    draw.text((200, 200), text, (255), font=font)
+    img.save(filename)
+
+def addindexedtext(filename, text):
+    img = Image.open(filename)
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 36)   
+    for i in range(squares):
+        startx, starty = getstart(i)
+        draw.text((startx, starty +310), text, (255),font= font)
+        draw.text((startx, starty +340), text, (255),font= font)
+        draw.text((startx, starty +370), text, (255),font= font)
+    img.save(filename)
+
+
+
+
 def make_gamma(w, h):
     g = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230]
-    ima = np.full((w + 10, h + 10), 255)
+    # w = round(w/2)
+    ima = np.full((w + 10, h + 10), 0)
     l = np.zeros(w)
     for i in range(23):
-        for j in range(round(w/24)):
-            l[i*round(w/24) + j] = g[i]
-    for k in range(h):
+        for j in range(round(w/48)):
+            l[100 +i*round(w/48) + j] = g[i]
+    for k in range(round(h/2)):
         ima[5:-5, k+5] = l
-    # ima = np.transpose(ima)
-    # cv2.imwrite(folder + 'gamma1.png', ima)
+    l = np.zeros(w)
+    for i in range(23):
+        for j in range(round(w/48)):
+            l[100+i*round(w/48) + j] = g[23-i]
+    for k in range(round(h/2), h-100):
+        ima[5:-5, k+5] = l
+    marker = centerline(w)
+    for j in range(h-100, h):
+        ima[:, j] = marker
     return ima
 
 def markerline(w,modulo):
     line = np.zeros(w)
-    for i in range(1, w):
+    for i in range(20, w):
         if divmod(i, modulo)[1] == 0:
             line[i] = 200
     for i in range(round(w/2)-2, round(w/2)+2):
             line[i] = 200
     return(line)
 
-
+def centerline(w):
+    line = np.zeros(w+10)
+    for i in range(round(w/2)-2, round(w/2)+2):
+        line[i] = 200
+    return(line)
 
 
 def makeimage(w, h, wvcount, phi, modulo):
@@ -140,6 +176,12 @@ makemaskstamps(squares, folder)
 maketexture(width, height, 100,folder)
 makeblack(width, height,0, folder)
 # make_gamma( stampwidth, stampheight)
+addindexedtext(folder + '0_cos.jpg', '1')
+addindexedtext(folder + '1_cos.jpg', '2')
+addindexedtext(folder + '2_cos.jpg', '3')
+addindexedtext(folder + '6_cos.jpg', '4')
+addindexedtext(folder + '7_cos.jpg', '5')
+addindexedtext(folder + '8_cos.jpg', '6')
 
 
 # makeimage(width, height, hf_periods, -1)
