@@ -63,15 +63,15 @@ def markerline(w,modulo):
     line = np.zeros(w)
     for i in range(20, w):
         if divmod(i, modulo)[1] == 0:
-            line[i] = 200
+            line[i] = 255
     for i in range(round(w/2)-2, round(w/2)+2):
-            line[i] = 200
+            line[i] = 255
     return(line)
 
 def centerline(w):
     line = np.zeros(w+10)
     for i in range(round(w/2)-2, round(w/2)+2):
-        line[i] = 200
+        line[i] = 255
     return(line)
 
 
