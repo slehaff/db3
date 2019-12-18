@@ -37,11 +37,11 @@ def match(img, template):
     threshold = 0.9
     loc = np.where( res >= threshold)
     for pt in zip(*loc[::-1]):
+        print(pt)
         cv2.rectangle(img, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
     return(img)
-# img1 = match(centertemplate)
 img = match(img4, fourtemplate)
-img = match(img, centertemplate)
-img= match(img, fringetemplate)
+# img = match(img, centertemplate)
+# img= match(img, fringetemplate)
 # cv2.imwrite(folder + 'res1.png',img1)
 cv2.imwrite(folder + 'res4.png',img)
