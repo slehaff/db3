@@ -6,17 +6,18 @@ from PIL import ImageDraw
 import sys
  
 
-width = 4096
-height = 2732
+width = 700
+height = 480
 periods = 1
-hf_periods = 20
+hf_periods = 30
 stampwidth = 600
-stampheight = 1000
+stampheight = 450
 stampborder = 7
-widthcount = 5
-heightcount =2
+widthcount = 1
+heightcount =1
 squares = widthcount*heightcount
-
+xoffset = 0
+yoffset = 0
 
 def addtext(filename, text):
     img = Image.open(filename)
@@ -98,8 +99,8 @@ def maskimage(w, h,val):
 
 
 def getstart(i):
-    startx = i%widthcount *(stampwidth+2*stampborder) + stampborder
-    starty = i//widthcount *(stampheight+2*stampborder) + stampborder
+    startx = xoffset+i%widthcount *(stampwidth+2*stampborder) + stampborder
+    starty = yoffset+i//widthcount *(stampheight+2*stampborder) + stampborder
 
     return startx, starty
 
@@ -111,19 +112,19 @@ def copystamp(x,y, stamp, wholeima):
 
 def addborders(ima,val):
     for i in range(heightcount+1):
-        for j in range(width):
-            ima[j, i*(stampheight+2*stampborder)-2] = val
-            ima[j, i*(stampheight+2*stampborder)-1] = val
-            ima[j, i*(stampheight+2*stampborder)] = val
-            ima[j, i*(stampheight+2*stampborder)+1] = val
-            ima[j, i*(stampheight+2*stampborder)+2] = val
+        for j in range(width-xoffset):
+            ima[j+xoffset, i*(stampheight+2*stampborder)-2] = val
+            ima[j+xoffset, i*(stampheight+2*stampborder)-1] = val
+            ima[j+xoffset, i*(stampheight+2*stampborder)] = val
+            ima[j+xoffset, i*(stampheight+2*stampborder)+1] = val
+            ima[j+xoffset, i*(stampheight+2*stampborder)+2] = val
     for i in range(widthcount+1):
         for j in range(height):
-            ima[ i*(stampwidth+2*stampborder)-2, j] = val
-            ima[ i*(stampwidth+2*stampborder)-1, j] = val
-            ima[ i*(stampwidth+2*stampborder), j] = val
-            ima[i*(stampwidth+2*stampborder)+1, j] = val
-            ima[ i*(stampwidth+2*stampborder)+2, j] = val
+            ima[ i*(stampwidth+2*stampborder)-2+xoffset, j] = val
+            ima[ i*(stampwidth+2*stampborder)-1+xoffset, j] = val
+            ima[ i*(stampwidth+2*stampborder)+xoffset, j] = val
+            ima[i*(stampwidth+2*stampborder)+1+xoffset, j] = val
+            ima[ i*(stampwidth+2*stampborder)+2+xoffset, j] = val
     
     return ima
 
