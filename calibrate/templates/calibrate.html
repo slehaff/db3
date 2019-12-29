@@ -10,9 +10,6 @@
       <div class="col-sm-8">
         <h3>Home Column 1&2</h3>
         <form action="{% url 'calibrate' %}" method="post">
-
-    {%endblock%}
-  
           {% csrf_token %}
           {{ sform }}
           <input type="submit" value="Calibrate">

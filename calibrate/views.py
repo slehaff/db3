@@ -14,8 +14,8 @@ import shutil
 import json
 from distutils.dir_util import copy_tree
 
-def calibrate(request):
-    return render(request, 'calibrate.html' )
+# def calibrate(request):
+#     return render(request, 'calibrate.html' )
 
 def scan_wrap(folder):
     print('scan_wrap started')
@@ -35,7 +35,7 @@ def unwrap(request):
     # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
     generate_json_pointcloud(folder + 'image1.png', folder +
                              '/abs_unwrap.png', three_folder + '/pointcl.json')
-    return render(request, 'scantemplate.html')
+    return render(request, 'calibrate.html')
 
 def unwrap2():
     folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
@@ -44,13 +44,13 @@ def unwrap2():
 
 
 
-def scan(request):
+def calibrate(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         sform = CalibrateForm(request.POST)
         # check whether it's valid:
         if sform.is_valid():
-            scandata = sform.cleaned_data['scan_type']
+            scandata = sform.cleaned_data['calibration_type']
             print(scandata)
             if scandata == 4:
                 messenger.gamma_mess()
