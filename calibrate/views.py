@@ -37,8 +37,8 @@ def unwrap(request):
                              '/abs_unwrap.png', three_folder + '/pointcl.json')
     return render(request, 'calibrate.html')
 
-def unwrap2():
-    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+def unwrap2(foldernumber):
+    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     return
 
@@ -57,9 +57,10 @@ def calibrate(request):
                 print('take gamma')
                 take_gamma()
             else:
-                messenger.scan_mess()
-                take_scan()
-                unwrap2()
+                for i in range(scandata):
+                    messenger.scan_mess()
+                    take_scan(scandata)
+                    unwrap2(scandata)
                 # process the data in form.cleaned_data as required
                 # ...
                 # redirect to a new URL:
@@ -72,9 +73,9 @@ def calibrate(request):
     return render(request, 'calibrate.html', context)
 
 
-def take_scan():
-    print('take scan')
-    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+def take_scan(foldernumber):
+    print('calibrate scan')
+    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)
     t = new_receiver_thread('1', folder=folder)
     print('scan receiver started')
     print('start take')
