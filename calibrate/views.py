@@ -13,6 +13,8 @@ from calibrate.pylib.jsoncloud import *
 import shutil
 import json
 from distutils.dir_util import copy_tree
+import os
+import shutil
 
 # def calibrate(request):
 #     return render(request, 'calibrate.html' )
@@ -20,25 +22,25 @@ from distutils.dir_util import copy_tree
 def scan_wrap(folder):
     print('scan_wrap started')
     print(folder)
-    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', 2)
     print('low done!')
-    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 2)
+    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 5)
 
 
-def unwrap(request):
-    # folder = ScanFolder.objects.last().folderName
-    folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
-    ref_folder = '/home/samir/db2/scan/static/scan_folder/scan_ref_folder'
-    three_folder = '/home/samir/db2/3D/static/3scan_folder'
-    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
-    deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
-    # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
-    generate_json_pointcloud(folder + 'image1.png', folder +
-                             '/abs_unwrap.png', three_folder + '/pointcl.json')
-    return render(request, 'calibrate.html')
+# def unwrap(request):
+#     # folder = ScanFolder.objects.last().folderName
+#     folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
+#     ref_folder = '/home/samir/db2/scan/static/scan_folder/scan_ref_folder'
+#     three_folder = '/home/samir/db2/3D/static/3scan_folder'
+#     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+#     deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
+#     # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
+#     generate_json_pointcloud(folder + 'image1.png', folder +
+#                              '/abs_unwrap.png', three_folder + '/pointcl.json')
+#     return render(request, 'calibrate.html')
 
 def unwrap2(foldernumber):
-    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)
+    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)+'/'
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     return
 
@@ -52,20 +54,32 @@ def calibrate(request):
         if sform.is_valid():
             scandata = sform.cleaned_data['calibration_type']
             print(scandata)
-            if scandata == 4:
+            if scandata == 99:
                 messenger.gamma_mess()
                 print('take gamma')
                 take_gamma()
             else:
-                for i in range(scandata):
-                    messenger.scan_mess()
-                    take_scan(scandata)
-                    unwrap2(scandata)
+                folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(scandata)+'/'             
+                # _ = new_receiver_thread('1', folder=folder)
+                # print('scan receiver started')
+                # print('start take')
+                try:
+                    shutil.rmtree(folder)
+                except OSError as error:
+                    print(error)
+                os.mkdir(folder)
+                messenger.scan_mess()
+                take_scan(scandata)
+                unwrap2(scandata)
+                print('calibrate scan')
+
                 # process the data in form.cleaned_data as required
                 # ...
                 # redirect to a new URL:
                 sform = CalibrateForm()
                 # return HttpResponse('/thanks/')
+
+ 
     else:
         'empty form'
         sform = CalibrateForm()
@@ -75,7 +89,7 @@ def calibrate(request):
 
 def take_scan(foldernumber):
     print('calibrate scan')
-    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)
+    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)+'/'
     t = new_receiver_thread('1', folder=folder)
     print('scan receiver started')
     print('start take')
