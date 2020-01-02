@@ -5,8 +5,8 @@ import sys
 import os
 from PIL import Image
 
-high_freq = 15
-low_freq = 1
+high_freq = 8
+low_freq = .6
 rwidth = 400
 rheight = 480
 

@@ -34,9 +34,13 @@ def unwrap(request):
                              '/abs_unwrap.png', three_folder + '/pointcl.json')
     return render(request, 'scantemplate.html')
 
+
 def unwrap2():
     folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    generate_json_pointcloud(folder + 'image1.png', folder + 'unwrap.png', folder +'pointcl.json')
+    generate_pointcloud(folder + 'image1.png', folder + 'unwrap.png', folder +'pointcl.ply')
+    
     return
 
 
