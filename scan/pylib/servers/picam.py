@@ -50,15 +50,15 @@ def new_receive_pi_data(n, to_folder):
             string_data = rcv_all(conn, int(image_len))
             data = np.fromstring(string_data, dtype='uint8')
             dec_img = cv2.imdecode(data, 1)
-            dec_img = cv2.flip(dec_img, 1)  # Invert image
-            dec_img = cv2.flip(dec_img, 0)  # Invert image
+            # dec_img = cv2.flip(dec_img, 1)  # Invert image
+            dec_img2 = cv2.flip(dec_img, 1)  # Invert image
             # dec_img = cv2.flip(dec_img, 0)  # flip horisontal
             # dec_img = cv2.flip(dec_img, 0)  # Invert image
             print('received image!')
             #dec_img = dec_img[100:400, 30:530]
             i += 1
             folder = '/home/samir/db3/scan/static/scan_folder/im_folder/'
-            cv2.imwrite(folder + '/image' + str(i-1)+'.png', dec_img)
+            cv2.imwrite(folder + '/image' + str(i-1)+'.png', dec_img2)
             print('i=', i, image_len, dec_img.shape)
     finally:
         conn.close()
