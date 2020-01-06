@@ -3,7 +3,7 @@ import cv2
 import glob
 
 
-def calibrate(folder):
+def calculate(folder):
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
@@ -12,7 +12,8 @@ def calibrate(folder):
     # Arrays to store object points and image points from all the images.
     objpoints = []  # 3d point in real world space
     imgpoints = []  # 2d points in image plane.
-    images = glob.glob(folder+'/*.png')
+    images = glob.glob(folder+'*/image1.png', recursive= True)
+    print('image count:',len(images))
     for fname in images:
         img = cv2.imread(fname)
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -20,6 +21,7 @@ def calibrate(folder):
         ret, corners = cv2.findChessboardCorners(gray, (9, 6), None)
         # If found, add object points, image points (after refining them)
         if ret:
+            print(fname)
             objpoints.append(objp)
             cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
@@ -31,18 +33,19 @@ def calibrate(folder):
     #Calibrate!
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
     print(mtx)
-    print(imgpoints)
-    print('imgpoints count', len(imgpoints))
+    # print(imgpoints)
+    # print('imgpoints count', len(imgpoints))
     print("dist:", dist)
     print("rvecs:", rvecs)
     print("tvecs:", tvecs)
+    undistort(folder,mtx, dist, 400, 480)
     np.savez( folder + '/cal' + '.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
     cv2.destroyAllWindows()
     return mtx, dist, rvecs, tvecs
 
 
 def undistort(folder, mtx, dist, w, h ):
-    images = glob.glob(folder + '/*.png')
+    images = glob.glob(folder + '*/image1.png', recursive= True)
     for fname in images:
         img = cv2.imread(fname)
         h, w = img.shape[:2]

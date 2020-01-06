@@ -12,7 +12,8 @@
         <form action="{% url 'calibrate' %}" method="post">
           {% csrf_token %}
           {{ sform }}
-          <input type="submit" value="Calibrate">
+          <input type="submit" name="Calibrate" value= 'Calibrate'>
+          <input type="submit" name="CalCalc" value= 'CalCalc' >
         </form>
       </div>
 

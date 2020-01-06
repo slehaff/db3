@@ -9,6 +9,7 @@ from calibrate.pylib.makewrap import *
 from calibrate.pylib.unwrap import *
 # from scan.pylib.pointcloud import *
 from calibrate.pylib.jsoncloud import *
+from calibrate.pylib.calculate import *
 
 import shutil
 import json
@@ -44,40 +45,48 @@ def unwrap2(foldernumber):
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     return
 
-
+# def calcalc():
+#     return
 
 def calibrate(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         sform = CalibrateForm(request.POST)
         # check whether it's valid:
-        if sform.is_valid():
-            scandata = sform.cleaned_data['calibration_type']
-            print(scandata)
-            if scandata == 99:
-                messenger.gamma_mess()
-                print('take gamma')
-                take_gamma()
-            else:
-                folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(scandata)+'/'             
-                # _ = new_receiver_thread('1', folder=folder)
-                # print('scan receiver started')
-                # print('start take')
-                try:
-                    shutil.rmtree(folder)
-                except OSError as error:
-                    print(error)
-                os.mkdir(folder)
-                messenger.scan_mess()
-                take_scan(scandata)
-                unwrap2(scandata)
-                print('calibrate scan')
+        if 'CalCalc' in request.POST:
+            print('CalCalc pressed')
+            folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/'
+            calculate(folder)
+        else:
+            
+            if sform.is_valid():
+                scandata = sform.cleaned_data['calibration_type']
+                print(scandata)
+                if scandata == 99:
+                    messenger.gamma_mess()
+                    print('take gamma')
+                    take_gamma()
+                else:
+                    folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(scandata)+'/'             
+                    # _ = new_receiver_thread('1', folder=folder)
+                    # print('scan receiver started')
+                    # print('start take')
+                    try:
+                        shutil.rmtree(folder)
+                    except OSError as error:
+                        print(error)
+                    os.mkdir(folder)
+                    messenger.scan_mess()
+                    take_scan(scandata)
+                    unwrap2(scandata)
+                    print('calibrate scan')
 
-                # process the data in form.cleaned_data as required
-                # ...
-                # redirect to a new URL:
-                sform = CalibrateForm()
-                # return HttpResponse('/thanks/')
+                    # process the data in form.cleaned_data as required
+                    # ...
+                    # redirect to a new URL:
+                    sform = CalibrateForm()
+                    # return HttpResponse('/thanks/')
+
 
  
     else:
