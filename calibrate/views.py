@@ -118,3 +118,13 @@ def take_gamma():
     # scan_wrap(folder=folder)
 
     return
+
+# def gamma_cal(request):
+#     print('3D')
+#     folder = '/home/samir/db2/scan/static/scan_folder/gamma_im_folder/'
+#     t = new_receiver_thread('1', folder=folder)
+#     gamma_mess()
+#     t.join()
+#     # gam = gamma_curve(folder)
+#     compensate_gamma(folder + 'image1.png')
+#     return render(request, 'scantemplate.html')
