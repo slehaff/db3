@@ -12,7 +12,7 @@ focalLength = 1290
 centerX = 292
 centerY = 286
 scalingFactor = 5000  # 5000.0
-rwidth = 640
+rwidth = 400
 rheight = 480
 
 

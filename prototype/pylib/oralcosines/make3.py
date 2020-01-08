@@ -9,7 +9,7 @@ import sys
 width = 700
 height = 480
 periods = 1
-hf_periods = 30
+hf_periods = 70
 stampwidth = 600
 stampheight = 450
 stampborder = 7
@@ -35,6 +35,13 @@ def addindexedtext(filename, text):
         draw.text((startx, starty +stampheight/2), str(i), (255),font= font)
     img.save('index.jpg')
 
+def gamma_image(w, h, value):
+    ima = np.zeros((w, h))
+    ima.fill(value*1)
+    ima = np.transpose(ima)
+    cv2.imwrite(folder+'gammas/'+'gamma' + str(value)+'.png', ima)
+    # print(ima[50, :])
+    return ima
 
 
 
@@ -44,19 +51,19 @@ def make_gamma(w, h):
     ima = np.full((w + 10, h + 10), 0)
     l = np.zeros(w)
     for i in range(23):
-        for j in range(round(w/48)):
-            l[100 +i*round(w/48) + j] = g[i]
+        for j in range(round(w/24)):
+            l[i*round(w/24) + j] = g[i]
     for k in range(round(h/2)):
         ima[5:-5, k+5] = l
     l = np.zeros(w)
     for i in range(23):
-        for j in range(round(w/48)):
-            l[100+i*round(w/48) + j] = g[23-i]
-    for k in range(round(h/2), h-100):
+        for j in range(round(w/24)):
+            l[i*round(w/24) + j] = g[23-i]
+    for k in range(round(h/2), h):
         ima[5:-5, k+5] = l
-    marker = centerline(w)
-    for j in range(h-100, h):
-        ima[:, j] = marker
+    # marker = centerline(w)
+    # for j in range(h-100, h):
+    #     ima[:, j] = marker
     return ima
 
 def markerline(w,modulo):
@@ -184,7 +191,15 @@ addindexedtext(folder + '0_cos.jpg', '1')
 # addindexedtext(folder + '7_cos.jpg', '5')
 # addindexedtext(folder + '8_cos.jpg', '6')
 
-
+ima = make_gamma( height-10 ,width-10)
+cv2.imwrite(folder + 'gamma.png', ima)
+j=0
+i=1
+while j < 8:
+    gamma_image(width, height, i+128)
+    j+=1
+    i=i<<1 
+    print(i)
 # makeimage(width, height, hf_periods, -1)
 # makeimage(width, height, hf_periods, 0)
 # makeimage(width, height, hf_periods, 1)

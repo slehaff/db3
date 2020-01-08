@@ -37,7 +37,9 @@ def unwrap(request):
 
 def unwrap2():
     folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    ref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
     generate_json_pointcloud(folder + 'image1.png', folder + 'unwrap.png', folder +'pointcl.json')
     generate_pointcloud(folder + 'image1.png', folder + 'unwrap.png', folder +'pointcl.ply')
     
