@@ -4,6 +4,7 @@ import glob
 
 
 def calculate(folder):
+    f = open("output.txt", "a")
     # termination criteria
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
@@ -19,12 +20,14 @@ def calculate(folder):
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         # Find the chess board corners
         ret, corners = cv2.findChessboardCorners(gray, (9, 6), None)
+        print('corners:', corners, file = f)
         # If found, add object points, image points (after refining them)
         if ret:
-            print(fname)
+            print(fname, file = f)
             objpoints.append(objp)
             cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
+            # print('imgpoints', imgpoints)
             # Draw and display the corners
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
@@ -35,10 +38,10 @@ def calculate(folder):
     print(mtx)
     # print(imgpoints)
     # print('imgpoints count', len(imgpoints))
-    print("dist:", dist)
-    print("rvecs:", rvecs)
-    print("tvecs:", tvecs)
-    undistort(folder,mtx, dist, 400, 480)
+    # print("dist:", dist)
+    # print("rvecs:", rvecs)
+    # print("tvecs:", tvecs)
+    undistort(folder,mtx, dist, 400, 400)
     np.savez( folder + '/cal' + '.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
     cv2.destroyAllWindows()
     return mtx, dist, rvecs, tvecs

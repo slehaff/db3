@@ -5,10 +5,10 @@ import sys
 import os
 from PIL import Image
 
-high_freq = 12
+high_freq = 18
 low_freq = .6
 rwidth = 400
-rheight = 480
+rheight = 400
 
 
 focalLength = 938.0
@@ -46,7 +46,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     unwrapdata = np.multiply(unwrapdata, 1.0)
     # unwrapdata = np.unwrap(np.transpose(unwrapdata))
     # unwrapdata = cv2.GaussianBlur(unwrapdata,(0,0),3,3)
-    unwrapdata = np.multiply(unwrapdata, 1.8)
+    unwrapdata = np.multiply(unwrapdata, 1.0)
     cv2.imwrite(folder + 'unwrap.png', unwrapdata)
 
 

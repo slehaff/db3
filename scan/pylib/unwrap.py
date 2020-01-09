@@ -8,7 +8,7 @@ from PIL import Image
 high_freq = 18
 low_freq = .6
 rwidth = 400
-rheight = 480
+rheight = 400
 
 
 focalLength = 938.0

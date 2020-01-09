@@ -8,7 +8,7 @@ import sys
 
 width = 700
 height = 480
-periods = 1
+periods = 3
 hf_periods = 70
 stampwidth = 600
 stampheight = 450
@@ -89,7 +89,7 @@ def makeimage(w, h, wvcount, phi, modulo):
     for i in range(w):
         raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w))))
         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
-        imaline[i] = raw_inp[i]
+        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**(1/.9)
     for j in range(h):
         ima[:, j] = imaline
     # marker = markerline(w, modulo)

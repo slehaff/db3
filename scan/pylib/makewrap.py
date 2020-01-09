@@ -6,7 +6,7 @@ import pyntcloud
 
 
 rwidth = 400
-rheight = 480
+rheight = 400
 
 
 def sqdist(v1, v2):
