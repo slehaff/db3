@@ -10,6 +10,7 @@ from calibrate.pylib.unwrap import *
 # from scan.pylib.pointcloud import *
 from calibrate.pylib.jsoncloud import *
 from calibrate.pylib.calculate import *
+from calibrate.pylib.jsoncloud import *
 
 import shutil
 import json
@@ -43,6 +44,8 @@ def scan_wrap(folder):
 def unwrap2(foldernumber):
     folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/cal_im_folder'+ str(foldernumber)+'/'
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    generate_pointcloud(folder + 'image1.png', folder + 'unwrap.png', folder +'pointcl.ply')
+
     return
 
 # def calcalc():

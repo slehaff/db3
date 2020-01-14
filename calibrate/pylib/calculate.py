@@ -3,6 +3,13 @@ import cv2
 import glob
 
 
+def draw(img, corners, imgpts):
+    corner = tuple(corners[0].ravel())
+    img = cv2.line(img, corner, tuple(imgpts[0].ravel()), (255,0,0), 5)
+    img = cv2.line(img, corner, tuple(imgpts[1].ravel()), (0,255,0), 5)
+    img = cv2.line(img, corner, tuple(imgpts[2].ravel()), (0,0,255), 5)
+    return img
+
 def calculate(folder):
     f = open("output.txt", "a")
     # termination criteria
@@ -20,15 +27,20 @@ def calculate(folder):
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         # Find the chess board corners
         ret, corners = cv2.findChessboardCorners(gray, (9, 6), None)
-        print('corners:', corners, file = f)
+        # print('corners:', corners, file = f)
+###########################################################################################
+####################  Her we return the projector corners ################################
+############## Read the corresponding phase file (unwrapped) convert phase(corner) to vp
+
+
         # If found, add object points, image points (after refining them)
         if ret:
-            print(fname, file = f)
             objpoints.append(objp)
-            cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+            print(objpoints, file= f)
+            corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
-            # print('imgpoints', imgpoints)
-            # Draw and display the corners
+            print('phi..:', getcornerabsphase(fname, corners))
+            print(fname, file = f)
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
             cv2.waitKey(1000)
@@ -36,12 +48,15 @@ def calculate(folder):
     #Calibrate!
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
     print(mtx)
-    # print(imgpoints)
-    # print('imgpoints count', len(imgpoints))
-    # print("dist:", dist)
-    # print("rvecs:", rvecs)
-    # print("tvecs:", tvecs)
-    undistort(folder,mtx, dist, 400, 400)
+    
+    for fname in images:
+        getcornerswcoords(fname, rvecs, tvecs)
+    print("dist:", dist)
+    print('rvecs count:', len(rvecs))
+    print('tvecs count:', len(tvecs))    
+    print("rvecs:", rvecs)
+    print("tvecs:", tvecs)
+    # undistort(folder,mtx, dist, 400, 400)
     np.savez( folder + '/cal' + '.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
     cv2.destroyAllWindows()
     return mtx, dist, rvecs, tvecs
@@ -62,3 +77,36 @@ def undistort(folder, mtx, dist, w, h ):
         cv2.waitKey(1000)
     cv2.destroyAllWindows()
     return
+
+def getcornerabsphase(file, corners):
+    file= file[:-10]+'unwrap.png'
+    img = cv2.imread(file)
+    # img = np.load(file)
+    phicorners = []
+    for i in range (len(corners)):
+        phi =img[int(corners[i][0][0]), int(corners[i][0][1])][0]
+        phicorners.append(phi)
+    return phicorners
+
+
+def getcornerswcoords(file, rvecs, tvecs):
+    print(rvecs[1][0], rvecs[1][1], rvecs[1][2])
+    return 
+
+def pnp(objectPoints,imgPoints,w,h,f):
+    cameraMatrix = np.array([[f,0,w/2.0],
+                     [0,f,h/2.0],
+                    [0,0,1]])
+    distCoeffs = np.zeros((5,1))
+    revtval,rvecs, tvecs  =cv2.solvePnP(objectPoints[:,np.newaxis,:], imgPoints[:,np.newaxis,:], cameraMatrix, distCoeffs)#,False,flags=cv2.SOLVEPNP_EPNP)
+    return rvecs,tvecs
+
+
+def rot_params_rv(rvecs):
+    from math import pi,atan2,asin
+    R = cv2.Rodrigues(rvecs)[0]
+    roll = 180*atan2(-R[2][1], R[2][2])/pi
+    pitch = 180*asin(R[2][0])/pi
+    yaw = 180*atan2(-R[1][0], R[0][0])/pi
+    rot_params= [roll,pitch,yaw]
+    return rot_params
