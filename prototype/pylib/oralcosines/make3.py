@@ -4,6 +4,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import sys
+import matplotlib
  
 
 width = 700
@@ -92,12 +93,15 @@ def makeimage(w, h, wvcount, phi, modulo):
         imaline[i] = raw_inp[i]*255*(imaline[i]/255)**(1/.9)*1.8 # Add gamma compensation!!
     for j in range(h):
         ima[:, j] = imaline
+
     # marker = markerline(w, modulo)
     # for j in range(h-100, h):
     #     ima[:, j] = marker
     # ima = np.transpose(ima)
 
-    cv2.imwrite(str(phi + 1) + '_cos.jpg', ima)
+    # cv2.imwrite(str(phi + 1) + '_cos.jpg', ima)
+    print(ima.shape)
+    print(ima[200,200])
     return ima
 
 def maskimage(w, h,val):
@@ -147,7 +151,13 @@ def makestamps(stampcount, wvcount, phi, modulo, folder):
     # copystamp(startx, starty, stampimage, wholeima)
     wholeima = addborders(wholeima, 250)
     wholeima = np.transpose(wholeima)
-    cv2.imwrite(folder + str(phi + 1) + '_cos.jpg', wholeima)
+    file = folder + str(phi + 1) + '_cos.jpg'
+    # gray = cv2.cvtColor(wholeima, cv2.COLOR_BGR2GRAY)
+    img2 = np.zeros([height,width,3])
+    # img2[:,:,0] = wholeima
+    img2[:,:,1] = wholeima
+    # img2[:,:,2] = wholeima
+    cv2.imwrite(folder + str(phi + 1) + '_cos.jpg', img2)
  
     
 def makemaskstamps(stampcount, folder):
@@ -184,22 +194,22 @@ makestamps(squares, periods, 7, 68, folder)
 # maketexture(width, height, 100,folder)
 # makeblack(width, height,0, folder)
 # make_gamma( stampwidth, stampheight)
-addindexedtext(folder + '0_cos.jpg', '1')
+# addindexedtext(folder + '0_cos.jpg', '1')
 # addindexedtext(folder + '1_cos.jpg', '2')
 # addindexedtext(folder + '2_cos.jpg', '3')
 # addindexedtext(folder + '6_cos.jpg', '4')
 # addindexedtext(folder + '7_cos.jpg', '5')
 # addindexedtext(folder + '8_cos.jpg', '6')
 
-ima = make_gamma( height-10 ,width-10)
-cv2.imwrite(folder + 'gamma.png', ima)
-j=0
-i=1
-while j < 8:
-    gamma_image(width, height, i+128)
-    j+=1
-    i=i<<1 
-    print(i)
+# ima = make_gamma( height-10 ,width-10)
+# cv2.imwrite(folder + 'gamma.png', ima)
+# j=0
+# i=1
+# while j < 8:
+#     gamma_image(width, height, i+128)
+#     j+=1
+#     i=i<<1 
+#     print(i)
 # makeimage(width, height, hf_periods, -1)
 # makeimage(width, height, hf_periods, 0)
 # makeimage(width, height, hf_periods, 1)
