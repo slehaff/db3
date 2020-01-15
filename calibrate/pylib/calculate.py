@@ -39,18 +39,20 @@ def calculate(folder):
             print(objpoints, file= f)
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
-            print('phi..:', getcornerabsphase(fname, corners))
+            # print('phi..:', getcornerabsphase(fname, corners))
             print(fname, file = f)
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
             cv2.waitKey(1000)
-
+            print('imgpoints:', imgpoints)
+            # print('objpoints:', objpoints)
     #Calibrate!
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
-    print(mtx)
+    print('matrix:', mtx)
     
     for fname in images:
         getcornerswcoords(fname, rvecs, tvecs)
+        # calctargetpoints(mtx,dist,imgpoints)
     print("dist:", dist)
     print('rvecs count:', len(rvecs))
     print('tvecs count:', len(tvecs))    
@@ -77,6 +79,25 @@ def undistort(folder, mtx, dist, w, h ):
         cv2.waitKey(1000)
     cv2.destroyAllWindows()
     return
+
+def calctargetpoints(mtx,dist,imgpoints):
+    results = [[0,0,0]]
+    #extend matrix col:
+    b=np.zeros((3,1))
+    mtx= np.reshape(mtx,(3,3))
+    print('mtx:', mtx)
+    a = np.append(mtx,b, axis=1)
+    print(a)
+    for i in range(len(imgpoints)):
+        c = [[0],[0],[0],[1]]
+        c[0]= imgpoints[i][0]
+        c[1]= imgpoints[i][1]
+        print('c:', imgpoints[i][1][0][0])
+        results[i]=np.matmul(a,c)
+    print('3ds:', results)
+    return(results)
+
+
 
 def getcornerabsphase(file, corners):
     file= file[:-10]+'unwrap.png'
