@@ -60,6 +60,7 @@ def calibrate(request):
             print('CalCalc pressed')
             folder = '/home/samir/db3/calibrate/static/calibrate_folder/calscans/'
             calculate(folder)
+            worldtargets(folder)
         else:
             
             if sform.is_valid():

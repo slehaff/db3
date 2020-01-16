@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import glob
-
+from scipy.spatial.transform import Rotation as R
 
 def draw(img, corners, imgpts):
     corner = tuple(corners[0].ravel())
@@ -44,7 +44,7 @@ def calculate(folder):
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
             cv2.waitKey(1000)
-            print('imgpoints:', imgpoints)
+            # print('imgpoints:', imgpoints)
             # print('objpoints:', objpoints)
     #Calibrate!
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
@@ -80,24 +80,53 @@ def undistort(folder, mtx, dist, w, h ):
     cv2.destroyAllWindows()
     return
 
-def calctargetpoints(mtx,dist,imgpoints):
+def worldtargets(folder):
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+    mtx, dist, rvecs, tvecs = loadnpz(folder)
+    i = 0
+    # objpoints = []  # 3d point in real world space
+    # imgpoints = []  # 2d points in image plane.
+    images = glob.glob(folder+'*/image1.png', recursive= True)
+    print('image count:',len(images))
+    for fname in images:
+        img = cv2.imread(fname)
+        gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        # Find the chess board corners
+        ret, corners = cv2.findChessboardCorners(gray, (9, 6), None)
+        if ret:
+            print(fname,i)
+            # objpoints.append(objp)
+            # print(objpoints, file= f)
+            corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+            # print('imagecorners:', corners)
+            calctargetpoints(mtx, dist, rvecs[i], tvecs[i], corners)
+            i +=1
+
+def calctargetpoints(mtx,dist, rvecsi, tvecsi,imgpoints):
+    # mtx[0][0]=mtx[0][0]/400 #Divide by image width to get f in mm
+    # mtx[1][1]=mtx[1][1]/400 #Divide by image height
     results = [[0,0,0]]
     #extend matrix col:
-    b=np.zeros((3,1))
-    mtx= np.reshape(mtx,(3,3))
-    print('mtx:', mtx)
-    a = np.append(mtx,b, axis=1)
-    print(a)
+    print(rvecsi, tvecsi)
+    r = R.from_rotvec(np.transpose (rvecsi)[0])
+    rotmat = r.as_matrix()
+    extmat = np.append(rotmat, tvecsi, axis=1)
+    totmat = np.matmul(mtx, extmat)
+    print('totmat:', totmat)
     for i in range(len(imgpoints)):
-        c = [[0],[0],[0],[1]]
-        c[0]= imgpoints[i][0]
-        c[1]= imgpoints[i][1]
-        print('c:', imgpoints[i][1][0][0])
-        results[i]=np.matmul(a,c)
-    print('3ds:', results)
+        c = np.array([[0],[0],[0],[1]])
+        c[0]= imgpoints[i][0][0]
+        c[1]= imgpoints[i][0][1]
+        result=np.matmul(totmat,c)
+        print('result:', result)
+        np.append(results,result)
+    # print('3ds:', results)
     return(results)
 
-
+def loadnpz(folder):
+    with np.load(folder + '/cal.npz') as X:
+        mtx, dist, rvecs, tvecs = [X[i] for i in ('mtx', 'dist', 'rvecs', 'tvecs')]
+        return mtx, dist, rvecs, tvecs
 
 def getcornerabsphase(file, corners):
     file= file[:-10]+'unwrap.png'
