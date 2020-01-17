@@ -36,11 +36,11 @@ def calculate(folder):
         # If found, add object points, image points (after refining them)
         if ret:
             objpoints.append(objp)
-            print(objpoints, file= f)
+            # print(objpoints, file= f)
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
             # print('phi..:', getcornerabsphase(fname, corners))
-            print(fname, file = f)
+            # print(fname, file = f)
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
             cv2.waitKey(1000)
@@ -81,13 +81,19 @@ def undistort(folder, mtx, dist, w, h ):
     return
 
 def worldtargets(folder):
+    f = open("worldtargets.txt", "a")
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     mtx, dist, rvecs, tvecs = loadnpz(folder)
+    mtx[0][0]=mtx[0][0]/400 # Divide by image width
+    mtx[1][1]=mtx[1][1]/400 #Divide by image width
+    print('length rvecs:', len(rvecs))
+    print('mtx mm:', mtx)
     i = 0
     # objpoints = []  # 3d point in real world space
     # imgpoints = []  # 2d points in image plane.
     images = glob.glob(folder+'*/image1.png', recursive= True)
     print('image count:',len(images))
+    mresults=[[0,0,0,0,0,0,0]]
     for fname in images:
         img = cv2.imread(fname)
         gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
@@ -99,28 +105,55 @@ def worldtargets(folder):
             # print(objpoints, file= f)
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             # print('imagecorners:', corners)
-            calctargetpoints(mtx, dist, rvecs[i], tvecs[i], corners)
+            results =calctargetpoints(fname,mtx, dist, rvecs[i], tvecs[i], corners, f)
+            mresults= np.vstack([mresults, results])
             i +=1
+    print('length:', len(mresults))
+    print(mresults, file=f)
+    I=np.ones(len(mresults))
+    I= np.transpose(I)
+    m=np.linalg.lstsq(mresults,I)
+    print('mmmmm:', m, file=f)
 
-def calctargetpoints(mtx,dist, rvecsi, tvecsi,imgpoints):
-    # mtx[0][0]=mtx[0][0]/400 #Divide by image width to get f in mm
-    # mtx[1][1]=mtx[1][1]/400 #Divide by image height
-    results = [[0,0,0]]
+
+
+def getphase(file, x, y):
+    file= file[:-10]+'unwrap.png'
+    img = cv2.imread(file)
+    phase = img[x,y]
+    return(phase[0]/256)
+
+
+def calctargetpoints(fname, mtx,dist, rvecsi, tvecsi,imgpoints, printfile):
+    print('mtx call:', mtx)
+    results = [[0,0,0,0,0,0,0]]
     #extend matrix col:
     print(rvecsi, tvecsi)
     r = R.from_rotvec(np.transpose (rvecsi)[0])
     rotmat = r.as_matrix()
-    extmat = np.append(rotmat, tvecsi, axis=1)
+    print('euler:', r.as_euler('zyx', degrees=True))
+    print('rotmat:', rotmat)
+    extmat = np.append(rotmat, tvecsi, axis=1) # Specify checker pattern 1.8mm
+    print('extrmat:', extmat)
     totmat = np.matmul(mtx, extmat)
     print('totmat:', totmat)
+    row=[0,0,0,1]
+    totmat = np.vstack([totmat, row])
+    invtotmat= np.linalg.inv(totmat)
+    print('invtotmat:', invtotmat)
     for i in range(len(imgpoints)):
         c = np.array([[0],[0],[0],[1]])
         c[0]= imgpoints[i][0][0]
         c[1]= imgpoints[i][0][1]
-        result=np.matmul(totmat,c)
-        print('result:', result)
-        np.append(results,result)
-    # print('3ds:', results)
+        result=np.transpose(np.dot(invtotmat,c))
+        phase = getphase(fname, int(imgpoints[i][0][0]), int(imgpoints[i][0][1]))
+        print('phase', phase)
+        resultmult = phase* np.array(result)
+        myequa=np.array([])
+        myequa= np.append(resultmult[0], result[0], axis=0)
+        myequa= myequa[:-1]
+        print('myequa:', myequa)
+        results=np.vstack([results,myequa])
     return(results)
 
 def loadnpz(folder):
@@ -148,7 +181,7 @@ def pnp(objectPoints,imgPoints,w,h,f):
                      [0,f,h/2.0],
                     [0,0,1]])
     distCoeffs = np.zeros((5,1))
-    revtval,rvecs, tvecs  =cv2.solvePnP(objectPoints[:,np.newaxis,:], imgPoints[:,np.newaxis,:], cameraMatrix, distCoeffs)#,False,flags=cv2.SOLVEPNP_EPNP)
+    _,rvecs, tvecs  =cv2.solvePnP(objectPoints[:,np.newaxis,:], imgPoints[:,np.newaxis,:], cameraMatrix, distCoeffs)#,False,flags=cv2.SOLVEPNP_EPNP)
     return rvecs,tvecs
 
 
