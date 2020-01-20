@@ -2,6 +2,8 @@ import numpy as np
 import cv2
 import glob
 from scipy.spatial.transform import Rotation as R
+WIDTH = 400
+HEIGHT = 400
 
 def draw(img, corners, imgpts):
     corner = tuple(corners[0].ravel())
@@ -84,8 +86,8 @@ def worldtargets(folder):
     f = open("worldtargets.txt", "a")
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
     mtx, dist, rvecs, tvecs = loadnpz(folder)
-    mtx[0][0]=mtx[0][0]/400 # Divide by image width
-    mtx[1][1]=mtx[1][1]/400 #Divide by image width
+    mtx[0][0]=mtx[0][0] # Divide by image width
+    mtx[1][1]=mtx[1][1] #Divide by image width
     print('length rvecs:', len(rvecs))
     print('mtx mm:', mtx)
     i = 0
@@ -113,15 +115,41 @@ def worldtargets(folder):
     I=np.ones(len(mresults))
     I= np.transpose(I)
     m=np.linalg.lstsq(mresults,I)
-    print('mmmmm:', m, file=f)
+    print('mmmmm:',m , file=f)
+    getworldcoords(folder, mtx, m)
 
 
+def getworldcoords(folder, mtx, m):
+    A = np.zeros((3,3))
+    fname = folder + '/unwrap.png'
+    wrldcoords = np.zeros((WIDTH, HEIGHT,3))
+    # xyinput = cv2.imread(fname)
+    for i in range(WIDTH):
+        for j in range(HEIGHT):
+            A[0][0] = mtx[0][0]
+            A[0][1]= 0
+            A[0][2]= mtx[0][2]- j
+            A[1][1] = mtx[1][1]
+            A[1][2] = mtx[1][2]- j
+            A[2][0] = m[0][4] - getphase(fname, i, j)*m[0][0]
+            A[2][1] = m[0][5] - getphase(fname, i, j)*m[0][1]
+            A[2][2] = m[0][4] - getphase(fname, i, j)*m[0][2]
+
+            invA = np.linalg.inv(A)
+            if (i == 200) :
+                print('invA:', invA)
+            b = np.transpose([0,0,getphase(fname, i, j)*m[0][3]])
+            wrldcoords[i,j] = np.transpose(np.matmul(invA, b))
+
+
+    return wrldcoords
 
 def getphase(file, x, y):
     file= file[:-10]+'unwrap.png'
+    print('phase file:', file, x, y)
     img = cv2.imread(file)
     phase = img[x,y]
-    return(phase[0]/256)
+    return(phase[0]/1)  #256)
 
 
 def calctargetpoints(fname, mtx,dist, rvecsi, tvecsi,imgpoints, printfile):
@@ -152,7 +180,7 @@ def calctargetpoints(fname, mtx,dist, rvecsi, tvecsi,imgpoints, printfile):
         myequa=np.array([])
         myequa= np.append(resultmult[0], result[0], axis=0)
         myequa= myequa[:-1]
-        print('myequa:', myequa)
+        # print('myequa:', myequa)
         results=np.vstack([results,myequa])
     return(results)
 
