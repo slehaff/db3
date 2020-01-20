@@ -114,9 +114,9 @@ def worldtargets(folder):
     print(mresults, file=f)
     I=np.ones(len(mresults))
     I= np.transpose(I)
-    m=np.linalg.lstsq(mresults,I)
+    m=np.linalg.lstsq(mresults,I, rcond= None)
     print('mmmmm:',m , file=f)
-    getworldcoords(folder, mtx, m)
+    print( getworldcoords(folder+'cal_im_folder22', mtx, m), file= f)
 
 
 def getworldcoords(folder, mtx, m):
@@ -125,6 +125,7 @@ def getworldcoords(folder, mtx, m):
     wrldcoords = np.zeros((WIDTH, HEIGHT,3))
     # xyinput = cv2.imread(fname)
     for i in range(WIDTH):
+        print('i:', i)
         for j in range(HEIGHT):
             A[0][0] = mtx[0][0]
             A[0][1]= 0
@@ -146,7 +147,7 @@ def getworldcoords(folder, mtx, m):
 
 def getphase(file, x, y):
     file= file[:-10]+'unwrap.png'
-    print('phase file:', file, x, y)
+    # print('phase file:', file, x, y)
     img = cv2.imread(file)
     phase = img[x,y]
     return(phase[0]/1)  #256)
@@ -175,7 +176,7 @@ def calctargetpoints(fname, mtx,dist, rvecsi, tvecsi,imgpoints, printfile):
         c[1]= imgpoints[i][0][1]
         result=np.transpose(np.dot(invtotmat,c))
         phase = getphase(fname, int(imgpoints[i][0][0]), int(imgpoints[i][0][1]))
-        print('phase', phase)
+        # print('phase', phase)
         resultmult = phase* np.array(result)
         myequa=np.array([])
         myequa= np.append(resultmult[0], result[0], axis=0)
