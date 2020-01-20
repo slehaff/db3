@@ -2,6 +2,12 @@ import numpy as np
 import cv2
 import glob
 from scipy.spatial.transform import Rotation as R
+import sys
+import os
+from PIL import Image
+from pyntcloud import PyntCloud
+
+
 WIDTH = 400
 HEIGHT = 400
 
@@ -116,7 +122,13 @@ def worldtargets(folder):
     I= np.transpose(I)
     m=np.linalg.lstsq(mresults,I, rcond= None)
     print('mmmmm:',m , file=f)
-    print( getworldcoords(folder+'cal_im_folder22', mtx, m), file= f)
+    # threedcoords = np.zeros((WIDTH, HEIGHT,3))
+    threedcoords= getworldcoords(folder+'cal_im_folder22', mtx, m)
+    file_save = folder +'cal_im_folder22'+ 'worldcoords.npy'
+    np.save(file_save, threedcoords, allow_pickle=False)
+    generate_pointcloud(threedcoords, folder +'cal_im_folder22'+ 'worldcoords.ply' )
+
+
 
 
 def getworldcoords(folder, mtx, m):
@@ -222,3 +234,57 @@ def rot_params_rv(rvecs):
     yaw = 180*atan2(-R[1][0], R[0][0])/pi
     rot_params= [roll,pitch,yaw]
     return rot_params
+
+
+def generate_pointcloud(worldcoords,ply_file):
+    """
+    Generate a colored point cloud in PLY format from a color and a depth image.
+    
+    Input:
+    rgb_file -- filename of color image
+    depth_file -- filename of depth image
+    ply_file -- filename of ply file
+    
+    """
+    # rgb = Image.open(rgb_file)
+    # depth = Image.open(depth_file)
+    # depth = Image.open(depth_file).convert('I')
+
+    # if rgb.size != depth.size:
+    #     raise Exception("Color and depth image do not have the same resolution.")
+    # if rgb.mode != "RGB":
+    #     raise Exception("Color image is not in RGB format")
+    # if depth.mode != "I":
+    #     raise Exception("Depth image is not in intensity format")
+
+
+    points = []    
+    for v in range(WIDTH):
+        for u in range(HEIGHT):
+            # color = rgb.getpixel((u,v))
+            # Z = depth.getpixel((u,v)) / scalingFactor
+            # if Z==0: continue
+            # X = (u - centerX) * Z / focalLength
+            # Y = (v - centerY) * Z / focalLength
+            # Z = depth.getpixel((u, v)) * .44
+            Z= worldcoords[u,v][2]
+            if Z == 0: continue
+            Y = worldcoords[u,v][1]
+            X = worldcoords[u,v][0]
+            points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,120,120,120))
+    file = open(ply_file,"w")
+    file.write('''ply
+format ascii 1.0
+element vertex %d
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+property uchar alpha
+end_header
+%s
+'''%(len(points),"".join(points)))
+    file.close()
+
