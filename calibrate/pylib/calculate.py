@@ -123,10 +123,11 @@ def worldtargets(folder):
     m=np.linalg.lstsq(mresults,I, rcond= None)
     print('mmmmm:',m , file=f)
     # threedcoords = np.zeros((WIDTH, HEIGHT,3))
-    threedcoords= getworldcoords(folder+'cal_im_folder22', mtx, m)
-    file_save = folder +'cal_im_folder22'+ 'worldcoords.npy'
+    folder ='/home/samir/db3/scan/static/scan_folder/scan_im_folder' 
+    threedcoords= getworldcoords(folder, mtx, m)
+    file_save = folder + '/worldcoords.npy'
     np.save(file_save, threedcoords, allow_pickle=False)
-    generate_pointcloud(threedcoords, folder +'cal_im_folder22'+ 'worldcoords.ply' )
+    generate_pointcloud(threedcoords, folder +'cal_im_folder21'+ '/worldcoords.ply' )
 
 
 
@@ -267,10 +268,10 @@ def generate_pointcloud(worldcoords,ply_file):
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
             # Z = depth.getpixel((u, v)) * .44
-            Z= worldcoords[u,v][2]
+            Z= worldcoords[u,v][2]*100
             if Z == 0: continue
-            Y = worldcoords[u,v][1]
-            X = worldcoords[u,v][0]
+            Y = v # worldcoords[u,v][1]
+            X = u # worldcoords[u,v][0]
             points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,120,120,120))
     file = open(ply_file,"w")
     file.write('''ply
@@ -288,3 +289,9 @@ end_header
 '''%(len(points),"".join(points)))
     file.close()
 
+
+
+folder ='/home/samir/db3/calibrate/static/calibrate_folder/calscans/' 
+file_load = folder +'cal_im_folder27'+ '/worldcoords.npy'
+threedcoords= np.load(file_load)
+generate_pointcloud(threedcoords, folder +'cal_im_folder27'+ '/worldcoords.ply' )

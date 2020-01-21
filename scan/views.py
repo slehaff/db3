@@ -41,7 +41,7 @@ def unwrap2():
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
     generate_json_pointcloud(folder + 'image2.png', folder + 'unwrap.png', folder +'pointcl.json')
-    generate_pointcloud(folder + 'image1.png', folder + 'abs_unwrap.png', folder +'pointcl.ply')
+    generate_pointcloud(folder + 'image2.png', folder + 'im_wrap2.png', folder +'pointcl.ply')
     
     return
 

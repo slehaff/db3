@@ -9,8 +9,8 @@ import matplotlib
 
 width = 700
 height = 480
-periods = 1.5
-hf_periods = 70
+periods = 1
+hf_periods = 50
 stampwidth = 600
 stampheight = 450
 stampborder = 7
@@ -83,14 +83,14 @@ def centerline(w):
     return(line)
 
 
-def makeimage(w, h, wvcount, phi, modulo):
+def makeimage(w, h, wvcount, phi):
     ima = np.zeros((w, h))
     imaline = np.ones(w)
     raw_inp = np.ones(w)
     for i in range(w):
         raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w))))
         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
-        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**(1/.9)*1.8 # Add gamma compensation!!
+        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1 #(1/.9)*1.8 # Add gamma compensation!!
     for j in range(h):
         ima[:, j] = imaline
 
@@ -139,9 +139,9 @@ def addborders(ima,val):
     
     return ima
 
-def makestamps(stampcount, wvcount, phi, modulo, folder):
+def makestamps(stampcount, wvcount, phi, folder):
     wholeima =  np.zeros((width,height))
-    stampimage = makeimage(stampwidth, stampheight, wvcount, phi,modulo)
+    stampimage = makeimage(stampwidth, stampheight, wvcount, phi)
     for i in range(stampcount):
         startx, starty = getstart(i)
         print(i, startx, starty)
@@ -184,12 +184,12 @@ def makeblack(w, h, value, folder):
 # gamma_correct = compensate_gamma(file)
 
 folder = "/home/samir/db3/prototype/pylib/oralcosines/"
-makestamps(squares, hf_periods, -1, 8,folder)
-makestamps(squares,hf_periods, 0, 8,folder)
-makestamps(squares, hf_periods, 1, 8,folder)
-makestamps(squares, periods, 5, 68, folder)
-makestamps(squares, periods, 6, 68, folder)
-makestamps(squares, periods, 7, 68, folder)
+makestamps(squares, hf_periods, -1, folder)
+makestamps(squares,hf_periods, 0, folder)
+makestamps(squares, hf_periods, 1, folder)
+makestamps(squares, periods, 5,  folder)
+makestamps(squares, periods, 6,  folder)
+makestamps(squares, periods, 7,  folder)
 # makemaskstamps(squares, folder)
 # maketexture(width, height, 100,folder)
 # makeblack(width, height,0, folder)
