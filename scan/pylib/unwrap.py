@@ -5,8 +5,8 @@ import sys
 import os
 from PIL import Image
 
-high_freq = 11
-low_freq = 3
+high_freq = 20
+low_freq = .7
 rwidth = 400
 rheight = 400
 
@@ -81,8 +81,8 @@ def deduct_ref(unwrap, reference, folder1, folder2):
     file2 = folder2 + '/' + reference
     wrap_data = np.load(file1)  # To be continued
     ref_data = np.load(file2)
-    net_data = np.subtract(ref_data, wrap_data)
-    net_save = folder1 + 'net_wrap.npy'
+    net_data = np.subtract(wrap_data, ref_data)
+    net_save = folder1 + 'abs_unwrap.npy'
     np.save(net_save, net_data, allow_pickle=False)
     print(net_save)
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)

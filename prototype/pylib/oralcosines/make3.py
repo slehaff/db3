@@ -5,14 +5,16 @@ from PIL import ImageFont
 from PIL import ImageDraw
 import sys
 import matplotlib
- 
 
-width = 700
-height = 480
+
+#!!!! Images are rotated in make stamps
+
+width = 480
+height = 700
 periods = 1
 hf_periods = 50
-stampwidth = 600
-stampheight = 450
+stampwidth = 450
+stampheight = 600
 stampborder = 7
 widthcount = 1
 heightcount =1
@@ -88,7 +90,7 @@ def makeimage(w, h, wvcount, phi):
     imaline = np.ones(w)
     raw_inp = np.ones(w)
     for i in range(w):
-        raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w))))
+        raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi -0.75)/3.0 + wvcount*float(i)/float(w))))
         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
         imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1 #(1/.9)*1.8 # Add gamma compensation!!
     for j in range(h):
@@ -150,14 +152,15 @@ def makestamps(stampcount, wvcount, phi, folder):
     # startx, starty = getstart(stampcount-1)
     # copystamp(startx, starty, stampimage, wholeima)
     wholeima = addborders(wholeima, 250)
-    wholeima = np.transpose(wholeima)
+    wholeima = np.transpose(wholeima)  
     file = folder + str(phi + 1) + '_cos.jpg'
     # gray = cv2.cvtColor(wholeima, cv2.COLOR_BGR2GRAY)
     img2 = np.zeros([height,width,3])
     # img2[:,:,0] = wholeima
     img2[:,:,1] = wholeima
     # img2[:,:,2] = wholeima
-    cv2.imwrite(folder + str(phi + 1) + '_cos.jpg', img2)
+    Rotated = cv2.rotate(img2, cv2.ROTATE_90_CLOCKWISE)
+    cv2.imwrite(folder + str(phi + 1) + '_cos.jpg', Rotated)# img2)
  
     
 def makemaskstamps(stampcount, folder):
