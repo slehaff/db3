@@ -92,7 +92,7 @@ def makeimage(w, h, wvcount, phi):
     for i in range(w):
         raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi -0.75)/3.0 + wvcount*float(i)/float(w))))
         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
-        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1 #(1/.9)*1.8 # Add gamma compensation!!
+        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1 #(1/.8)*1.8 # Add gamma compensation!!
     for j in range(h):
         ima[:, j] = imaline
 

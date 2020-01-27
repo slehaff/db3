@@ -48,7 +48,7 @@ def calculate(folder):
             corners = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners)
             # print('phi..:', getcornerabsphase(fname, corners))
-            # print(fname, file = f)
+            print(fname, file = f)
             cv2.drawChessboardCorners(img, (9, 6), corners, ret)
             cv2.imshow('img', img)
             cv2.waitKey(1000)
@@ -122,12 +122,12 @@ def worldtargets(folder):
     I= np.transpose(I)
     m=np.linalg.lstsq(mresults,I, rcond= None)
     print('mmmmm:',m , file=f)
-    # threedcoords = np.zeros((WIDTH, HEIGHT,3))
+    threedcoords = np.zeros((WIDTH, HEIGHT,3))
     folder ='/home/samir/db3/scan/static/scan_folder/scan_im_folder' 
     threedcoords= getworldcoords(folder, mtx, m)
     file_save = folder + '/worldcoords.npy'
     np.save(file_save, threedcoords, allow_pickle=False)
-    generate_pointcloud(threedcoords, folder +'cal_im_folder21'+ '/worldcoords.ply' )
+    generate_pointcloud(threedcoords, folder +'/worldcoords.ply' )
 
 
 
@@ -291,7 +291,7 @@ end_header
 
 
 
-folder ='/home/samir/db3/calibrate/static/calibrate_folder/calscans/' 
-file_load = folder +'cal_im_folder27'+ '/worldcoords.npy'
-threedcoords= np.load(file_load)
-generate_pointcloud(threedcoords, folder +'cal_im_folder27'+ '/worldcoords.ply' )
+# folder ='/home/samir/db3/calibrate/static/calibrate_folder/calscans/' 
+# file_load = folder +'cal_im_folder5'+ '/worldcoords.npy'
+# threedcoords= np.load(file_load)
+# generate_pointcloud(threedcoords, folder +'cal_im_folder5'+ '/worldcoords.ply' )

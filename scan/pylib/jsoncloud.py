@@ -80,7 +80,7 @@ def generate_pointcloud(rgb_file,depth_file,ply_file):
     points = []    
     for v in range(rgb.size[1]):
         for u in range(rgb.size[0]):
-            color = rgb.getpixel((u,v))
+            color = [128,128,128] #rgb.getpixel((u,v))
             # Z = depth.getpixel((u,v)) / scalingFactor
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
