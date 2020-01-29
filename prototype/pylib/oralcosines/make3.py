@@ -41,8 +41,10 @@ def addindexedtext(filename, text):
 def gamma_image(w, h, value):
     ima = np.zeros((w, h))
     ima.fill(value*1)
-    ima = np.transpose(ima)
-    cv2.imwrite(folder+'gammas/'+'gamma' + str(value)+'.png', ima)
+    # ima = np.transpose(ima)
+    img2 = np.zeros([w,h,3])
+    img2[:,:,1] = ima
+    cv2.imwrite(folder+'gammas/'+'gamma' + str(round(value/10))+'.png', img2)
     # print(ima[50, :])
     return ima
 
@@ -52,18 +54,18 @@ def make_gamma(w, h):
     g = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230]
     # w = round(w/2)
     ima = np.full((w + 10, h + 10), 0)
-    l = np.zeros(w)
+    l = np.zeros(h)
     for i in range(23):
-        for j in range(round(w/24)):
-            l[i*round(w/24) + j] = g[i]
-    for k in range(round(h/2)):
-        ima[5:-5, k+5] = l
-    l = np.zeros(w)
+        for j in range(round(h/24)):
+            l[ i*round(h/24) + j] = g[i]
+    for k in range(round(w/2)):
+        ima[ k+5, 5:-5] = l
+    l = np.zeros(h)
     for i in range(23):
-        for j in range(round(w/24)):
-            l[i*round(w/24) + j] = g[23-i]
-    for k in range(round(h/2), h):
-        ima[5:-5, k+5] = l
+        for j in range(round(h/24)):
+            l[ i*round(h/24) + j] = g[23-i]
+    for k in range(round(w/2), w):
+        ima[k+5, 5:-5] = l
     # marker = centerline(w)
     # for j in range(h-100, h):
     #     ima[:, j] = marker
@@ -204,8 +206,14 @@ makestamps(squares, periods, 7,  folder)
 # addindexedtext(folder + '7_cos.jpg', '5')
 # addindexedtext(folder + '8_cos.jpg', '6')
 
-# ima = make_gamma( height-10 ,width-10)
-# cv2.imwrite(folder + 'gamma.png', ima)
+# ima = make_gamma( width-10 ,height-10)
+# ima = np.flip(ima,0)
+# img2 = np.zeros([width,height,3])
+# # img2[:,:,0] = wholeima
+# img2[:,:,1] = ima
+# cv2.imwrite(folder + 'gamma11.png', img2)
+for j in range(24):
+    gamma_image(width, height, j*10)
 # j=0
 # i=1
 # while j < 8:

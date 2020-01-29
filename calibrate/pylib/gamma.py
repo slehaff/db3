@@ -8,8 +8,8 @@ import pylab
 import pygame
 
 
-width = 854
-height = 480
+width = 480
+height = 700
 periods = 49
 
 
@@ -139,4 +139,4 @@ def compensate_gamma(file):
 # file = '/home/samir/db2/scan/static/scan_folder/gamma_im_folder/image1.png'
 # compensate_gamma(file)
 
-# make_image(850, 480)
+# make_image(width, height)

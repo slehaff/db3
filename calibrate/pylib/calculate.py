@@ -66,14 +66,14 @@ def calculate(folder):
     print('tvecs count:', len(tvecs))    
     print("rvecs:", rvecs)
     print("tvecs:", tvecs)
-    # undistort(folder,mtx, dist, 400, 400)
+    undistort(folder,mtx, dist, 400, 400)
     np.savez( folder + '/cal' + '.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
     cv2.destroyAllWindows()
     return mtx, dist, rvecs, tvecs
 
 
 def undistort(folder, mtx, dist, w, h ):
-    images = glob.glob(folder + '*/image1.png', recursive= True)
+    images = glob.glob(folder + '*/image6.png', recursive= True)
     for fname in images:
         img = cv2.imread(fname)
         h, w = img.shape[:2]
@@ -84,6 +84,7 @@ def undistort(folder, mtx, dist, w, h ):
         dst = dst[y:y + h, x:x + w]
         print('dst:', dst.shape)
         cv2.imshow('dst', dst)
+        # cv2.imwrite(folder + '/dst.png', dst)
         cv2.waitKey(1000)
     cv2.destroyAllWindows()
     return
