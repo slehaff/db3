@@ -135,8 +135,47 @@ def compensate_gamma(file):
 
     return g_poly_comp
 
+def comp_num_gamma():
+    gamma_curve = [0,6,9,13,16,17,22,26,34,38,47,54,60,72,74,84,93,101,114,158,174,181,185,200,255]
+    yarray = gamma_curve
+    xarray = np.arange(0, 250, 10)
+    # yarray[23:] = 255
+    yarray[0] = yarray[1]
+    print(yarray)
+    poly = np.polyfit(xarray, yarray, 8)
+    print('poly:', poly)
+    x = np.linspace(0, 240, 25)
+    lx = np.zeros(2)
+    ly = np.zeros(2)
+    lx[0] = 0
+    lx[1] = 250
+    ly[0] = yarray[0]
+    ly[1] = yarray[24]
+    polynom = ideal(lx, ly)
+    ideal_line = polynom(xarray)
+    gideal = gamma_comp(yarray, ideal_line)
+    g_poly_comp = np.polyfit(xarray, gideal, 8)
+    plot(xarray, np.polyval(polynom, xarray), 'b-')
+    plot(xarray, np.polyval(poly, xarray), 'g-')
+    plot(xarray, np.polyval(g_poly_comp, xarray), 'r-')
+    plot(xarray, gideal, 'b o')
+    plot(xarray, yarray, 'r o')
+    g = np.poly1d(g_poly_comp)
+    for i in range(1, 25):
+        print('g', i, g(i*10))
+
+    show()
+    gamma_cos(width, height, periods, -1, g)
+    gamma_cos(width, height, periods, 0, g)
+    gamma_cos(width, height, periods, 1, g)
+    gamma_cos(width, height, 1, 5, g)
+    gamma_cos(width, height, 1, 6, g)
+    gamma_cos(width, height, 1, 7, g)
+
+    return g_poly_comp
 
 # file = '/home/samir/db2/scan/static/scan_folder/gamma_im_folder/image1.png'
 # compensate_gamma(file)
 
 # make_image(width, height)
+comp_num_gamma()
