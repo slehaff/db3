@@ -18,9 +18,9 @@ def scan_wrap(folder):
     print('scan_wrap started')
     print(folder)
     take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', 2)
-    print('low done!')
     take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 5)
-
+    take_wrap(folder, 'scan_wrap3.npy', 'im_wrap3.png', 'image', 8)
+    take_wrap(folder, 'scan_wrap4.npy', 'im_wrap4.png', 'image', 11)
 
 def unwrap(request):
     # folder = ScanFolder.objects.last().folderName
