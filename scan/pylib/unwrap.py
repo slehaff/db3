@@ -5,7 +5,7 @@ import sys
 import os
 from PIL import Image
 
-high_freq = 20
+high_freq = 15
 low_freq = .7
 rwidth = 400
 rheight = 400
@@ -15,6 +15,8 @@ focalLength = 938.0
 centerX = 319.5
 centerY = 239.5
 scalingFactor = 5000
+
+
 
 
 def unwrap_r(low_f_file, high_f_file, folder):

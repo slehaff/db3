@@ -85,7 +85,7 @@ def generate_pointcloud(rgb_file,depth_file,ply_file):
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
-            Z = depth.getpixel((u, v)) * .7
+            Z = depth.getpixel((u, v)) * .44
             if Z == 0: continue
             Y = .22 * v
             X = .22 * u

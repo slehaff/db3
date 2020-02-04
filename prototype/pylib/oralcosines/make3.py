@@ -99,7 +99,7 @@ def makeimage(w, h, wvcount, phi):#,g):
     imaline = np.ones(w)
     raw_inp = np.ones(w)
     for i in range(w):
-        raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi-0.75 )+ 2*wvcount*float(i)/float(w))))
+        raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi-1.2 )+ 2*wvcount*float(i)/float(w))))
         # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi -0.75)/3.0 + wvcount*float(i)/float(w))))
         # raw_inp[i] = g(255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w)))))
         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])

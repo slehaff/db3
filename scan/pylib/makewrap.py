@@ -50,6 +50,14 @@ def get_average(array, n):
     return average
 
 
+def avewrap(folder, file1, file2, average):
+    a= np.load(folder+file1)
+    b= np.load(folder+file2)
+    c= (a+b)/2
+    np.save(folder+average, c, allow_pickle=False)
+    return
+
+
 
 def take_wrap(folder, numpy_file, png_file, preamble, offset):
     print('take_wrap !!!!!')

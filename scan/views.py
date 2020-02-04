@@ -21,6 +21,9 @@ def scan_wrap(folder):
     take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 5)
     take_wrap(folder, 'scan_wrap3.npy', 'im_wrap3.png', 'image', 8)
     take_wrap(folder, 'scan_wrap4.npy', 'im_wrap4.png', 'image', 11)
+    avewrap(folder,'scan_wrap1.npy','scan_wrap2.npy','hf_wrap.npy')
+    avewrap(folder,'scan_wrap3.npy','scan_wrap4.npy','lf_wrap.npy')
+
 
 def unwrap(request):
     # folder = ScanFolder.objects.last().folderName
@@ -38,10 +41,10 @@ def unwrap(request):
 def unwrap2():
     folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
     ref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
-    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    unwrap_r('lf_wrap.npy', 'hf_wrap.npy', folder )
     deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
     generate_json_pointcloud(folder + 'image2.png', folder + 'unwrap.png', folder +'pointcl.json')
-    generate_pointcloud(folder + 'image2.png', folder + 'im_wrap2.png', folder +'pointcl.ply')
+    generate_pointcloud(folder + 'image2.png', folder + 'unwrap.png', folder +'pointcl.ply')
     
     return
 
@@ -97,3 +100,5 @@ def take_gamma():
     # scan_wrap(folder=folder)
 
     return
+
+
