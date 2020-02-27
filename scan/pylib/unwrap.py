@@ -4,11 +4,13 @@ import argparse
 import sys
 import os
 from PIL import Image
+from jsoncloud import *
 
-high_freq = 15
-low_freq = .7
-rwidth = 400
-rheight = 400
+
+high_freq = 11
+low_freq = 1
+rwidth = 170
+rheight = 170
 
 
 focalLength = 938.0
@@ -81,7 +83,8 @@ def abs_unwrap_r(low_f, high_f, output_file,  folder):
 def deduct_ref(unwrap, reference, folder1, folder2):
     file1 = folder1 + '/' + unwrap
     file2 = folder2 + '/' + reference
-    wrap_data = np.load(file1)  # To be continued
+    wrap_data = np.load(file1)  # To be continuedref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
+
     ref_data = np.load(file2)
     net_data = np.subtract(wrap_data, ref_data)
     net_save = folder1 + 'abs_unwrap.npy'
@@ -90,4 +93,12 @@ def deduct_ref(unwrap, reference, folder1, folder2):
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
     net_data = np.multiply(net_data, 1.0)
     cv2.imwrite(folder1 + 'abs_unwrap.png', net_data)
-    
+
+
+for i in range(109):
+
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+    # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
+    generate_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.ply')
+

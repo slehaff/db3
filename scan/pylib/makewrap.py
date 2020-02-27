@@ -5,8 +5,8 @@ import time
 import pyntcloud
 
 
-rwidth = 400
-rheight = 400
+rwidth = 170
+rheight = 170
 
 
 def sqdist(v1, v2):
@@ -247,3 +247,11 @@ def testarctan(folder):
 # gray2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
+for i in range(109):
+
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+
+    take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+    take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
+
+

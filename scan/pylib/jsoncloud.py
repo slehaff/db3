@@ -69,18 +69,18 @@ def generate_pointcloud(rgb_file,depth_file,ply_file):
     # depth = Image.open(depth_file)
     depth = Image.open(depth_file).convert('I')
 
-    if rgb.size != depth.size:
-        raise Exception("Color and depth image do not have the same resolution.")
-    if rgb.mode != "RGB":
-        raise Exception("Color image is not in RGB format")
-    if depth.mode != "I":
-        raise Exception("Depth image is not in intensity format")
+    # if rgb.size != depth.size:
+    #     raise Exception("Color and depth image do not have the same resolution.")
+    # if rgb.mode != "RGB":
+    #     raise Exception("Color image is not in RGB format")
+    # if depth.mode != "I":
+    #     raise Exception("Depth image is not in intensity format")
 
 
     points = []    
     for v in range(rgb.size[1]):
         for u in range(rgb.size[0]):
-            color =  rgb.getpixel((u,v)) #[128,128,128]
+            color =   [128,128,128] #rgb.getpixel((u,v))
             # Z = depth.getpixel((u,v)) / scalingFactor
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
