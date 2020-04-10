@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import time
 import pyntcloud
+import math
 
 
 rwidth = 170
@@ -97,8 +98,14 @@ def take_wrap(folder, numpy_file, png_file, preamble, offset):
     im0 = np.zeros((rwidth, rheight), dtype=np.float)
     im1 = np.zeros((rwidth, rheight), dtype=np.float)
     im2 = np.zeros((rwidth, rheight), dtype=np.float)
+    imtexture = np.zeros((rheight, rwidth), dtype=np.float)
+    imblack = np.zeros((rheight, rwidth), dtype=np.float)
     nom = np.zeros((rheight, rwidth), dtype=np.float)
     denom = np.zeros((rheight, rwidth), dtype=np.float)
+    imtexture = cv2.imread(folder+'/blendertexture.png')
+    imblack = cv2.imread(folder+'/blenderblack.png')
+    imdiff = np.subtract(imtexture,imblack)
+    cv2.imwrite(folder+'/imdiff.png', imdiff)
     im_arr = [im0, im1, im2]
     for i in range(image_cnt):
         my_file = folder + preamble + str(offset+i+1) + ".png"
@@ -122,25 +129,42 @@ def take_wrap(folder, numpy_file, png_file, preamble, offset):
             # if phi_sum == 0:
             #     phi_sum = .01
             # noise = float(phi_range / phi_sum)
-            # mask[i, j] = (noise < noise_threshold)
-            # process[i, j] = not(mask[i, j])
+            if (imdiff[i,j][0]<55):
+                mask[i,j]= True
+            # mask[i, j] = (imdiff[i,j] < 3)
+            process[i, j] = not(mask[i, j])
             # c_range[i, j] = phi_range
-            if  True: #(maskimg[i,j]  > 30): #True:  # process[i, j]:
-                a = (1.0*im_arr[0][i, j]-1.0*im_arr[2][i, j])
-                b = (2.0*im_arr[1][i, j] - 1.0*im_arr[0]
-                     [i, j] - 1.0*im_arr[2][i, j])
+            if  process[i,j]: # True: #(maskimg[i,j]  > 30): #True:  # process[i, j]:
+                a = (1.0*im_arr[1][i, j]-1.0*im_arr[2][i, j])
+                b = (2.0*im_arr[0][i, j] - 1.0*im_arr[1][i, j] - 1.0*im_arr[2][i, j])
                 nom[i, j] = a
                 denom[i, j] = b
-                wrap[i, j] = np.arctan2(1.7320508 * nom[i, j], denom[i, j])
+                wrap[i, j] =  np.arctan2(1.7320508*nom[i, j], denom[i, j])
+
                 if wrap[i, j] < 0:
                     if nom[i, j] < 0:
                         wrap[i, j] += 2*np.pi
                     else:
                         wrap[i, j] += 1 * np.pi
-                im_wrap[i, j] = 128/np.pi * wrap[i, j]
+                # wrap[i, j] =  math.atan(1.7320508*a/b) #np.arctan(1.7320508 * nom[i, j], denom[i, j])
+                # if a>0 and b>0:
+                #     wrap[i,j]
+                # else:
+                #     if a>0 and b<0:
+                #         wrap[i,j] += np.pi
+                #     else:
+                #         if a<0 and b<0:
+                #             wrap[i,j] -=np.pi
+                #         else:
+                #             if a<0 and b>0:
+                #                 wrap[i,j]
+
+
+                im_wrap[i, j] = 128*wrap[i, j]/np.pi
             else:
                 wrap[i, j] = 0
                 im_wrap[i, j] = 0
+    print('wrap range:', np.ptp(wrap))
     wrap = cv2.GaussianBlur(wrap, (3, 3), 0)
     file_path = folder + '/' + numpy_file
     np.save(file_path, wrap, allow_pickle=False)
@@ -163,8 +187,10 @@ def take_wrap(folder, numpy_file, png_file, preamble, offset):
     np.save(denom_file, denom, allow_pickle=False)
     bkg_file = folder + '/' + str(offset) + 'bkg.png'
     cv2.imwrite(bkg_file, bkg_intensity)
-    # mask_file = folder + '/' + str(offset) + 'mask.png'
-    # cv2.imwrite(mask_file, mask)
+    mask_file = folder + '/' + str(offset) + 'mask.png'
+    cv2.imwrite(mask_file, mask*128)
+    process_file = folder + '/' + str(offset) + 'process.png'
+    cv2.imwrite(process_file, process*128)
     cv2.destroyAllWindows()
     print('nom', nom)
     print('denom', denom)
@@ -247,10 +273,9 @@ def testarctan(folder):
 # gray2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
-for i in range(109):
+for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-
+    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
     take_wrap(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
     take_wrap(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 

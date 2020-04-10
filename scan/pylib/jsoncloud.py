@@ -43,7 +43,7 @@ def generate_json_pointcloud(rgb_file, depth_file, json_file):
     for v in range(rgb.size[1]):
         for u in range(rgb.size[0]):
             color = rgb.getpixel((u, v))
-            Z = depth.getpixel((u, v)) *.44
+            Z = depth.getpixel((u, v)) *.22
             if Z == 0: continue
             Y = .22 * v
             X = .22 * u
@@ -55,7 +55,7 @@ def generate_json_pointcloud(rgb_file, depth_file, json_file):
     outfile.close()
 
 
-def generate_pointcloud(rgb_file,depth_file,ply_file):
+def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
     """
     Generate a colored point cloud in PLY format from a color and a depth image.
     
@@ -68,6 +68,7 @@ def generate_pointcloud(rgb_file,depth_file,ply_file):
     rgb = Image.open(rgb_file)
     # depth = Image.open(depth_file)
     depth = Image.open(depth_file).convert('I')
+    mask = Image.open(mask_file).convert('I')
 
     # if rgb.size != depth.size:
     #     raise Exception("Color and depth image do not have the same resolution.")
@@ -80,16 +81,17 @@ def generate_pointcloud(rgb_file,depth_file,ply_file):
     points = []    
     for v in range(rgb.size[1]):
         for u in range(rgb.size[0]):
-            color =   [128,128,128] #rgb.getpixel((u,v))
+            color =   rgb.getpixel((u,v))
             # Z = depth.getpixel((u,v)) / scalingFactor
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
-            Z = depth.getpixel((u, v)) * .44
-            if Z == 0: continue
-            Y = .22 * v
-            X = .22 * u
-            points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,color[0],color[1],color[2]))
+            if (mask.getpixel((u,v))<55):
+                Z = depth.getpixel((u, v)) * .11
+                if Z == 0: continue
+                Y = .22 * v
+                X = .22 * u
+                points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,220,220,220))#color[0],color[1],color[2]))
     file = open(ply_file,"w")
     file.write('''ply
 format ascii 1.0

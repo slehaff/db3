@@ -16,12 +16,12 @@ import pygame
 
 #!!!! Images are rotated in make stamps
 
-width = 480
-height = 700
+width = 170
+height = 170
 periods = 1
-hf_periods = 50
-stampwidth = 450
-stampheight = 600
+hf_periods = 12
+stampwidth = 145
+stampheight = 145
 stampborder = 7
 widthcount = 1
 heightcount =1
@@ -35,41 +35,25 @@ def addtext(filename, text):
     font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 28)
     draw.text((200, 200), text, (255), font=font)
     img.save(filename)
-
-def addindexedtext(filename, text):
-    img = Image.open(filename)
-    draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 86)   
-    for i in range(squares):
-        startx, starty = getstart(i)
-        draw.text((startx, starty +stampheight/2), str(i), (255),font= font)
-    img.save('index.jpg')
-
-def gamma_image(w, h, value):
-    ima = np.zeros((w, h))
-    ima.fill(value*1)
-    # ima = np.transpose(ima)
-    img2 = np.zeros([w,h,3])
-    img2[:,:,1] = ima
-    cv2.imwrite(folder+'gammas/'+'gamma' + str(round(value/10))+'.png', img2)
-    # print(ima[50, :])
-    return ima
+    folder = "/home/samir/db3/prototype/pylib/oralcosines/"
 
 
 
 def make_gamma(w, h):
     g = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230]
     # w = round(w/2)
+    w= w-10
+    h=h-10
     ima = np.full((w + 10, h + 10), 0)
     l = np.zeros(h)
     for i in range(23):
-        for j in range(round(h/24)):
+        for j in range(2, round(h/24)):
             l[ i*round(h/24) + j] = g[i]
     for k in range(round(w/2)):
         ima[ k+5, 5:-5] = l
     l = np.zeros(h)
     for i in range(23):
-        for j in range(round(h/24)):
+        for j in range(2, round(h/24)):
             l[ i*round(h/24) + j] = g[23-i]
     for k in range(round(w/2), w):
         ima[k+5, 5:-5] = l
@@ -99,23 +83,38 @@ def makeimage(w, h, wvcount, phi):#,g):
     imaline = np.ones(w)
     raw_inp = np.ones(w)
     for i in range(w):
-        raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi-1.2 )+ 2*wvcount*float(i)/float(w))))
-        # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi -0.75)/3.0 + wvcount*float(i)/float(w))))
-        # raw_inp[i] = g(255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w)))))
-        # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
-        imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1#(1/.8)*1.8 # Add gamma compensation!!
+        raw_inp[i] = 255.0*(.5 + .5*np.cos(2*np.pi*(wvcount*i/w-phi/3)))
+        # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi )+ 2*wvcount*float(i)/float(w))))
+        # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi )/3.0 + wvcount*float(i)/float(w))))
+        # imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1#(1/.8)*1.8 # Add gamma compensation!!
+        imaline[i] = raw_inp[i]
     for j in range(h):
         ima[:, j] = imaline
-
-    # marker = markerline(w, modulo)
-    # for j in range(h-100, h):
-    #     ima[:, j] = marker
-    # ima = np.transpose(ima)
-
-    # cv2.imwrite(str(phi + 1) + '_cos.jpg', ima)
     print(ima.shape)
-    print(ima[200,200])
     return ima
+
+# def makeimage(w, h, wvcount, phi):#,g):
+#     ima = np.zeros((w, h))
+#     imaline = np.ones(w)
+#     raw_inp = np.ones(w)
+#     for i in range(w):
+#         # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi )+ 2*wvcount*float(i)/float(w))))
+#         raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi )/3.0 + wvcount*float(i)/float(w))))
+#         # raw_inp[i] = g(255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi)/3.0 + wvcount*float(i)/float(w)))))
+#         # imaline[i] = np.polyval(gamma_correct, raw_inp[i])
+#         imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1#(1/.8)*1.8 # Add gamma compensation!!
+#     for j in range(h):
+#         ima[:, j] = imaline
+
+#     # marker = markerline(w, modulo)
+#     # for j in range(h-100, h):
+#     #     ima[:, j] = marker
+#     # ima = np.transpose(ima)
+
+#     # cv2.imwrite(str(phi + 1) + '_cos.jpg', ima)
+#     print(ima.shape)
+#     return ima
+
 
 def maskimage(w, h,val):
         ima = np.full((w,h), val)
@@ -170,8 +169,8 @@ def makestamps(stampcount, wvcount, seq, phi,folder):#,g):
     # img2[:,:,0] = wholeima
     img2[:,:,1] = wholeima
     # img2[:,:,2] = wholeima
-    Rotated = cv2.rotate(img2, cv2.ROTATE_90_CLOCKWISE)
-    cv2.imwrite(folder + str(seq + 1) + '_cos.jpg', Rotated)# img2)
+    Rotated = cv2.rotate(img2, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    cv2.imwrite(folder + str(seq + 1) + '_cos.png', Rotated)# img2)
  
     
 def makemaskstamps(stampcount, folder):
@@ -259,19 +258,31 @@ def comp_num_gamma():
 # file = '/home/samir/db2/scan/static/scan_folder/gamma_im_folder/image1.png'
 # gamma_correct = compensate_gamma(file)
 # comp_num_gamma()
-folder = "/home/samir/db3/prototype/pylib/oralcosines/"
-makestamps(squares, hf_periods, -1, 0, folder)
-makestamps(squares,hf_periods, 0, 2/3, folder)
-makestamps(squares, hf_periods, 1, 4/3, folder)
-makestamps(squares, hf_periods, 2, 1/3, folder)
-makestamps(squares,hf_periods, 3, 1, folder)
-makestamps(squares, hf_periods, 4, 5/3, folder)
-makestamps(squares, periods, 5, 0,  folder)
-makestamps(squares, periods, 6, 2/3,  folder)
-makestamps(squares, periods, 7, 4/3,  folder)
-makestamps(squares, periods, 8, 1/3,  folder)
-makestamps(squares, periods, 9, 1,  folder)
-makestamps(squares, periods, 10, 5/3,  folder)
+def makemanystamps():
+    folder = "/home/samir/db3/prototype/pylib/oralcosines/"
+    makestamps(squares, hf_periods, -1, 0, folder)
+    makestamps(squares,hf_periods, 0, 2/3, folder)
+    makestamps(squares, hf_periods, 1, 4/3, folder)
+    makestamps(squares, hf_periods, 2, 1/3, folder)
+    makestamps(squares,hf_periods, 3, 1, folder)
+    makestamps(squares, hf_periods, 4, 5/3, folder)
+    makestamps(squares, periods, 5, 0,  folder)
+    makestamps(squares, periods, 6, 2/3,  folder)
+    makestamps(squares, periods, 7, 4/3,  folder)
+    makestamps(squares, periods, 8, 1/3,  folder)
+    makestamps(squares, periods, 9, 1,  folder)
+    makestamps(squares, periods, 10, 5/3,  folder)
+
+def makemygama(h,w, folder):
+    file = folder + 'gamma.png'
+    # gray = cv2.cvtColor(wholeima, cv2.COLOR_BGR2GRAY)
+    wholeima = make_gamma(w,h)
+    img2 = np.zeros([height,width,3])
+    # img2[:,:,0] = wholeima
+    img2[:,:,1] = wholeima
+    # img2[:,:,2] = wholeima
+    Rotated = cv2.rotate(img2, cv2.ROTATE_90_CLOCKWISE)
+    cv2.imwrite(file, Rotated)# img2)
 # makemaskstamps(squares, folder)
 # maketexture(width, height, 100,folder)
 # makeblack(width, height,0, folder)
@@ -281,12 +292,8 @@ makestamps(squares, periods, 10, 5/3,  folder)
 # addindexedtext(folder + '2_cos.jpg', '3')
 # addindexedtext(folder + '6_cos.jpg', '4')
 # addindexedtext(folder + '7_cos.jpg', '5')
-# addindexedtext(folder + '8_cos.jpg', '6')
+# addindexedtext(folder + '8_cos.jpg', '6')    folder = "/home/samir/db3/prototype/pylib/oralcosines/"
 
-# ima = make_gamma( width-10 ,height-10)
-# ima = np.flip(ima,0)
-# img2 = np.zeros([width,height,3])
-# # img2[:,:,0] = wholeima
 # img2[:,:,1] = ima
 # cv2.imwrite(folder + 'gamma11.png', img2)
 # for j in range(24):
@@ -305,3 +312,14 @@ makestamps(squares, periods, 10, 5/3,  folder)
 # makeimage(width, height, periods, 6)
 # makeimage(width, height, periods, 7)
 
+folder = "/home/samir/db3/prototype/pylib/oralcosines/"
+makestamps(squares, hf_periods, 0, 1, folder)
+makestamps(squares,hf_periods, 1, 0, folder)
+makestamps(squares, hf_periods, 2, -1, folder)
+makestamps(squares, 1, 5, 1, folder)
+makestamps(squares,1, 6, 0, folder)
+makestamps(squares, 1, 7, -1, folder)
+
+maketexture(width,height,230,folder)
+makeblack(width,height,0,folder)
+# makemygama(width,height,folder)
