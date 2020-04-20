@@ -18,8 +18,8 @@ import pygame
 
 width = 170
 height = 170
-periods = 1
-hf_periods = 13
+periods = 2
+hf_periods = 26
 stampwidth = 145
 stampheight = 145
 stampborder = 7
@@ -83,7 +83,7 @@ def makeimage(w, h, wvcount, phi):#,g):
     imaline = np.ones(w)
     raw_inp = np.ones(w)
     for i in range(w):
-        raw_inp[i] = 255.0*(.5 + .5*np.cos(2*np.pi*(wvcount*i/w-phi/3)))
+        raw_inp[i] = 255.0*(.5 + .5*np.cos(np.pi*(wvcount*i/w-phi)))
         # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(np.pi*(1.0*float(phi )+ 2*wvcount*float(i)/float(w))))
         # raw_inp[i] = 255.0*(1.0/2.0 + 1.0/2.0*np.cos(2.0*np.pi*(1.0*float(phi )/3.0 + wvcount*float(i)/float(w))))
         # imaline[i] = raw_inp[i]*255*(imaline[i]/255)**1#(1/.8)*1.8 # Add gamma compensation!!
@@ -312,13 +312,15 @@ def makemygama(h,w, folder):
 # makeimage(width, height, periods, 6)
 # makeimage(width, height, periods, 7)
 
-folder = "/home/samir/db3/prototype/pylib/oralcosines/"
-makestamps(squares, hf_periods, 0, 1, folder)
-makestamps(squares,hf_periods, 1, 0, folder)
-makestamps(squares, hf_periods, 2, -1, folder)
-makestamps(squares, 1, 5, 1, folder)
-makestamps(squares,1, 6, 0, folder)
-makestamps(squares, 1, 7, -1, folder)
+folder = "/home/samir/db3/prototype/pylib/4cosines/"
+makestamps(squares, hf_periods, 0, 0, folder)
+makestamps(squares,hf_periods, 1, 1/2, folder)
+makestamps(squares, hf_periods, 2, 1, folder)
+makestamps(squares, hf_periods, 3, 3/2, folder)
+makestamps(squares, periods, 5, 0, folder)
+makestamps(squares,periods, 6, 1/2, folder)
+makestamps(squares, periods, 7, 1, folder)
+makestamps(squares, periods, 8, 3/2, folder)
 
 maketexture(width,height,230,folder)
 makeblack(width,height,0,folder)

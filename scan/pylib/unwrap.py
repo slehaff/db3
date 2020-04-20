@@ -7,7 +7,7 @@ from PIL import Image
 from jsoncloud import *
 
 
-high_freq = 12
+high_freq = 13
 low_freq = 1
 rwidth = 170
 rheight = 170
@@ -42,8 +42,8 @@ def unwrap_r(low_f_file, high_f_file, folder):
     for i in range(rheight):
         for j in range(rwidth):
             kdata[i, j] = round((high_freq/low_freq * (wraplow[i, j])- wraphigh[i, j])/(2*PI))
-            # unwrapdata[i,j] = wraphigh[i, j] + 2*PI*kdata[i, j]
-    unwrapdata = np.add(wraphigh, np.multiply(2*PI,kdata) )
+            unwrapdata[i,j] = .1*(wraphigh[i, j]/np.max(wraphigh) +2*PI* kdata[i, j]/np.max(wraphigh))
+    # unwrapdata = np.add(wraphigh, np.multiply(2*PI,kdata) )
     print('kdata:', np.ptp(np.multiply(1,kdata)))
     print('unwrap:', np.ptp(unwrapdata))
     # print("I'm in unwrap_r")
@@ -56,7 +56,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     # unwrapdata = np.unwrap(np.transpose(unwrapdata))
     # unwrapdata = cv2.GaussianBlur(unwrapdata,(0,0),3,3)
     # unwrapdata = np.multiply(unwrapdata, 1.0)
-    im_unwrap = np.divide(unwrapdata, 1)# np.max(unwrapdata)*255)
+    im_unwrap = 255*unwrapdata# np.max(unwrapdata)*255)
     # unwrapdata/np.max(unwrapdata)*255
     cv2.imwrite(folder + 'unwrap.png', im_unwrap)
     cv2.imwrite(folder + 'kdata.png', np.multiply(2*PI,kdata))
@@ -93,7 +93,7 @@ def deduct_ref(unwrap, reference, folder1, folder2):
     wrap_data = np.load(file1)  # To be continuedref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
 
     ref_data = np.load(file2)
-    net_data = np.subtract(ref_data, wrap_data)
+    net_data = 12*np.subtract(ref_data, wrap_data)
     net_save = folder1 + 'abs_unwrap.npy'
     np.save(net_save, net_data, allow_pickle=False)
     print(net_save)
@@ -117,13 +117,14 @@ def unwrap(request):
 
 for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
-    ref_folder ='/home/samir/Desktop/blender/pycode/scans/scan_ref_folder' 
+    folder = '/home/samir/Desktop/blender/pycode/scanspheres/render'+ str(i)+'/'
+    ref_folder ='/home/samir/Desktop/blender/pycode/scanplanes/scan_ref_folder' 
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
     # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+    generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
 

@@ -87,11 +87,11 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
             if (mask.getpixel((u,v))<55):
-                Z = depth.getpixel((u, v)) * .11
+                Z = depth.getpixel((u, v)) * .22
                 if Z == 0: continue
                 Y = .22 * v
                 X = .22 * u
-                points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,220,220,220))#color[0],color[1],color[2]))
+                points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,color[0],color[1],color[2]))
     file = open(ply_file,"w")
     file.write('''ply
 format ascii 1.0
