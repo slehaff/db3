@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 from PIL import Image
-from jsoncloud import *
+from jsoncloud import generate_json_pointcloud, generate_pointcloud
 
 
 high_freq = 13
@@ -90,15 +90,21 @@ def unwrap_r(low_f_file, high_f_file, folder):
 def deduct_ref(unwrap, reference, folder1, folder2):
     file1 = folder1 + '/' + unwrap
     file2 = folder2 + '/' + reference
+    maskfile = folder1 + '/'+ 'scan_wrap1_process.npy' 
     wrap_data = np.load(file1)  # To be continuedref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
 
     ref_data = np.load(file2)
-    net_data = 12*np.subtract(ref_data, wrap_data)
+    mask_data = np.load(maskfile)
+    ref_data = np.multiply(ref_data, mask_data)
+    net_data = np.subtract(ref_data, wrap_data)
+    # print('reference:', ref_data)
+    # print('wrap:',wrap_data)
+    # print('abs:',net_data)
     net_save = folder1 + 'abs_unwrap.npy'
     np.save(net_save, net_data, allow_pickle=False)
     print(net_save)
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
-    net_data = np.multiply(net_data, 1.0)
+    # net_data = np.multiply(net_data, 1.0)
     cv2.imwrite(folder1 + 'abs_unwrap.png', net_data)
 
 
@@ -117,8 +123,8 @@ def unwrap(request):
 
 for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanspheres/render'+ str(i)+'/'
-    ref_folder ='/home/samir/Desktop/blender/pycode/scanplanes/scan_ref_folder' 
+    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
+    ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
     # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
