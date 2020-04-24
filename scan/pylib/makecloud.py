@@ -87,8 +87,8 @@ def calcm3dpoint( mref, nref,cmi):
         # print(i, distance[j])
 
         # distance = abs(np.dot(ProCam, normalized))
-        if distance[i] < 1 :
-            print('found:', i, distance[i], distance[i-20])
+        if distance[i] < 0.01 :
+            print('found:', i, distance[i], distance[i-1])
             break
     print('min, max:', np.min(distance), np.max(distance))
     # print(distance)
@@ -99,7 +99,7 @@ def getm3dpoint(x,y,phi):
     cmi = getcmi(x,y)
     mref = getmref(cmi)
     nreflinepoint = getrefline(phi)
-    print(cmi, mref, nreflinepoint)
+    # print(cmi, mref, nreflinepoint)
     m3dpoint = calcm3dpoint(mref, nreflinepoint, cmi)
     return(m3dpoint)
 
@@ -122,6 +122,6 @@ def threedpoints(unwrapfile):
             print(i,j)
 
 # makecmitable()
-unwfile = '/home/samir/Desktop/blender/pycode/scans/render'+ str(0)+'/unwrap.npy'
+unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(0)+'/unwrap.npy'
 ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
 threedpoints(unwfile) 
