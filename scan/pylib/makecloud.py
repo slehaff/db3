@@ -10,16 +10,17 @@ from jsoncloud import generate_json_pointcloud, generate_pointcloud
 
 
 Pro = np.array([0,60,85]) # projector origin
-ProI=np.array([0, 76.2, 24.35]) # Porjector origin projection
+ProI=np.array([0, 76.77369189, 22.39972965]) # Porjector origin projection
 Cam = np.array([0,45, 20]) # camera origin
-COr = np.array([0, 60, -35])
+COr = np.array([0, 15, -55])
 CamPro = np.array([15, 65])
 nR = np.array([0,0,1])
-Cmo = np.array([0, 45.082, 19.578])
+Cmo = np.array([0, 45.11318, 19.5776])
+cmo = np.array([0,  .11318, -.42239]) # camera image plane with cam = origo
 nCam = np.array([0, 0.2588, 0.9659])
 ProCam = np.array([0, 15, 65])
-Cos15 = np.cos(15/360*2*np.pi)
-Sin15 = np.sin(15/360*2*np.pi)
+Cos11 = np.cos(11/360*2*np.pi)
+Sin11 = np.sin(11/360*2*np.pi)
 Pix = .001 # Pixel size
 PhiMin = 30 # Ref Min
 PhiMax = 255
@@ -35,9 +36,10 @@ rheight = 170
 
 def getcmi(x,y):
     cmi = np.array([0.,0.,0.])    
-    cmi[0] = (Cmo[0]+(x-85)*Pix)
-    cmi[1] = (Cmo[1]-45+ (y-85)* Cos15*Pix)
-    cmi[2] = (Cmo[2]-20+ (y-85)* Sin15*Pix)
+    cmi[0] = ((x-85)*Pix)+ cmo[0]
+    cmi[1] = (((y-85)* Cos11*Pix)+ cmo[1])
+    cmi[2] = (((y-85)* -Sin11*Pix)+ cmo[2])
+    # cmi = np.add(Cam,cmi)
     return(cmi)
 
 # def getcni(x,y):
@@ -47,32 +49,43 @@ def getcmi(x,y):
 #     cni[2] = Cmo[2]+ (y-85)* Sin15*Pix
 #     return(cni)
 
-def makecmitable():
-    cmi = [0.,0.,0.]
-    cmitab = np.arange(170.0*170*3).reshape(170,170,3)
-    print('shape', cmitab.shape)
-    for x in range(170):
-        for y in range(170):cmi = np.array([0.,0.,0.])
-    return cmitab         
+# def makecmitable():
+#     cmi = [0.,0.,0.]
+#     cmitab = np.arange(170.0*170*3).reshape(170,170,3)
+#     print('shape', cmitab.shape)
+#     for x in range(170):
+#         for y in range(170):cmi = np.array([0.,0.,0.])
+#     return cmitab         
 
 
 def getmref(cmi):
     mref = np.array([0,0,0])
     # mref = Cam + np.dot(nR, (Cam-COr))/np.dot(nR, (Cam-cmi))*(Cam-cmi)
-    mref = Cam + 55*cmi/np.linalg.norm(cmi)
-    print(np.linalg.norm(cmi))
+    mref =  np.multiply(-55/np.dot(cmi,nR), cmi)
+    print('cmi dot nR:', np.dot(cmi, nR))
+    mref = np.add(mref, Cam)
     return(mref)
+
+
+def getProI():
+    lengthc = abs(np.linalg.norm(Pro-Cmo)*np.cos(15/360*2*np.pi))
+    c = [0, lengthc*np.sin(15/360*2*np.pi), -lengthc*np.cos(15/360*2*np.pi)]
+    ProI = Pro + c
+    print('ProI:', ProI, lengthc, c)
+    return(ProI)
 
 
 def getcni(cmi,phi):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
     l= (ProI- cmi)/np.linalg.norm(ProI-cmi)
+    print('l:', l)
     deltaphi = (PhiMax-PhiMin)/170
     cni[0] = phi/deltaphi #pixels
+    print('cni[0]:', cni[0])
+
     cni[1] = cni[0]/l[1]*l[0]
-
-
+    print('cni[1]:', cni[1])
     cni = 0
     return(cni)
 
@@ -136,41 +149,51 @@ def threedpoints(unwrapfile):
 def test3dpoints(unwrapfile):
     # Read 4 sample points:
     unwrap = np.load(unwrapfile)
+    ProI = getProI()
     print('50,50, unwrap(50,50):', unwrap[50,50])
     print('70,50, unwrap(70,50):', unwrap[70,50])
     print('50,70, unwrap(50,70):', unwrap[50,70])
     print('100,100, unwrap(100,100):', unwrap[100,100])
     print('150,150, unwrap(150,150):', unwrap[150,150])
     print('150,100, unwrap(150,100):', unwrap[150,100])
-    plist = [[50,50],[70,50],[50,70],[100,100],[150,150],[150,100]]
+    plist = [[0,0],[0,169],[169,0],[20,20],[50,50],[70,50],[50,70],[100,100],[100,150],[150,150],[150,100],[169,169]]
     cmilist =[]
     x= []
     y= []
     z= []
+    x3= []
+    y3= []
+    z3= []
     Cma = [0,45,20]
     print(len(plist))
     for i in range(len(plist)):
         cmi = getcmi(plist[i][0], plist[i][1])
-        print(plist[i][0], plist[i][1], cmi)
+        getcni(cmi, unwrap[plist[i][0], plist[i][1]])
+        print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
         cmilist.append(cmi)
-        x.append( cmi[0])
-        y.append(cmi[1])
-        z.append(cmi[2])
+        x3.append( cmi[0])
+        y3.append(cmi[1])
+        z3.append(cmi[2])
+        # x.append(0)
+        # y.append(0)
+        # z.append(0)
         mref = getmref(cmi)
         print('mref:', mref)
-        # x.append( mref[0])
-        # y.append(mref[1])
-        # z.append(mref[2])
-        # plt.plot(Cma, mref)
-
+        x.append( mref[0])
+        y.append(mref[1])
+        z.append(mref[2])
+    # x.append( Cma[0])
+    # y.append(Cma[1])
+    # z.append(Cma[2])
     print(len(x))
     figure = plt.figure()
     ax = figure.add_subplot(111, projection = '3d')
-    ax.scatter(x,y,z, c = 'r', marker = 'o')
-    x2 = [5,-5,0,0,0,0,0]
-    y2 = [0,0,0,45,60,60,45.082]
-    z2 = [0,0,0,20,85,85,19.578]
-    # ax.scatter(x2,y2,z2, c = 'g', marker = '+')
+    ax.scatter(x,y,z, c = 'r', marker = '.')
+    ax.scatter(x3,y3,z3, c = 'b', marker = '.')
+    x2 = [35,-35,0,0,0, ProI[0]]
+    y2 = [0,0,0,45,60,ProI[1]]
+    z2 = [0,0,0,20,85, ProI[2]]
+    ax.scatter(x2,y2,z2, c = 'g', marker = 'x')
     ax.set_xlabel('Xaxis')
     ax.set_ylabel('Yaxis')
     ax.set_zlabel('Zaxis')
