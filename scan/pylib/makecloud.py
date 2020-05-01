@@ -44,21 +44,6 @@ def getcmi(x,y):
     # cmi = np.add(Cam,cmi)
     return(cmi)
 
-# def getcni(x,y):
-#     cni = np.array([0.,0.,0.])    
-#     cni[0] = Cmo[0]+(x-85)*Pix
-#     cni[1] = Cmo[1]+ (y-85)* Cos15*Pix
-#     cni[2] = Cmo[2]+ (y-85)* Sin15*Pix
-#     return(cni)
-
-# def makecmitable():
-#     cmi = [0.,0.,0.]
-#     cmitab = np.arange(170.0*170*3).reshape(170,170,3)
-#     print('shape', cmitab.shape)
-#     for x in range(170):
-#         for y in range(170):cmi = np.array([0.,0.,0.])
-#     return cmitab         
-
 
 def getmref(cmi):
     mref = np.array([0,0,0])
@@ -80,28 +65,26 @@ def getcni(cmi,phi, phimax, phimin):
     l = np.array([0.,0.,0.])
     Cmi = cmi+Cam
     l= (ProI- Cmi)/np.linalg.norm(ProI-Cmi)
-    print('l:', l)
+    # print('l:', l)
     deltaphi = (phimax-phimin)/170
-    print('deltaphi:', deltaphi)
+    # print('deltaphi:', deltaphi)
     cni[1] = Pix*phi/deltaphi*Cos15+cmo[1]*Cos15 #pixels
-    print('cni[1]:', cni[1])
+    # print('cni[1]:', cni[1])
     t = (cni[1]-cmi[1])/l[1]
     print('Cmi:',Cmi)
     cni =  np.add(cmi ,t*l)
-    print('t:',t,'cni:', cni)
+    print('cni:', cni)
     return(cni)
+
 
 
 
 def getnref(cni):
     nref = np.array([0,0,0])
-    nref = Cam + np.dot(nR, (Cam-COr))/np.dot(nR, (cni-Cam))*(cni-Cam)
+    nref =  np.multiply(-55/np.dot(cni,nR), cni)
+    nref = np.add(nref, Cam)
     return(nref)
 
-# cmi = np.array([0.,0.,0.])
-#     y = rdash*RefLength + YrefStart
-#     refLinePoint = [0, y, -35]
-#     return(refLinePoint)
 
 
 def getq(cmi):
@@ -167,6 +150,9 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     x3= []
     y3= []
     z3= []
+    x4= []
+    y4= []
+    z4= []
     Cma = [0,45,20]
     print(len(plist))
     for i in range(len(plist)):
@@ -176,28 +162,30 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
         PhiMin = refunwrap[0,0]
         PhiMax = refunwrap[169,169]
         print('minmax:', PhiMax, PhiMin)
-        getcni((cmi), unwrap[plist[i][0], plist[i][1]], PhiMin, PhiMax)
+        cni = getcni((cmi), unwrap[plist[i][0], plist[i][1]], PhiMin, PhiMax)
         # print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
         cmilist.append(cmi)
         x3.append( cmi[0])
         y3.append(cmi[1])
         z3.append(cmi[2])
-        # x.append(0)
-        # y.append(0)
-        # z.append(0)
+       
         mref = getmref(cmi)
-        # print('mref:', mref)
+        print('mref:', mref)
         x.append( mref[0])
         y.append(mref[1])
         z.append(mref[2])
-    # x.append( Cma[0])
-    # y.append(Cma[1])
-    # z.append(Cma[2])
+        nref = getnref(cni)
+        print('nref:', nref)
+        x4.append( nref[0])
+        y4.append(nref[1])
+        z4.append(nref[2])
+
     print(len(x))
     figure = plt.figure()
     ax = figure.add_subplot(111, projection = '3d')
     ax.scatter(x,y,z, c = 'r', marker = '.')
     ax.scatter(x3,y3,z3, c = 'b', marker = '.')
+    ax.scatter(x4,y4,z4, c = 'b', marker = '.')
     x2 = [35,-35,0,0,0, ProI[0]]
     y2 = [0,0,0,45,60,ProI[1]]
     z2 = [0,0,0,20,85, ProI[2]]
@@ -206,8 +194,26 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     ax.set_ylabel('Yaxis')
     ax.set_zlabel('Zaxis')
     plt.show()
+# def getcni(x,y):
+#     cni = np.array([0.,0.,0.])    
+#     cni[0] = Cmo[0]+(x-85)*Pix
+#     cni[1] = Cmo[1]+ (y-85)* Cos15*Pix
+#     cni[2] = Cmo[2]+ (y-85)* Sin15*Pix
+#     return(cni)
+
 
 # makecmitable()
 unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(1)+'/unwrap.npy'
 ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
 test3dpoints(unwfile, ref_unwfile)
+
+
+
+####################################################################################################
+# def makecmitable():
+#     cmi = [0.,0.,0.]
+#     cmitab = np.arange(170.0*170*3).reshape(170,170,3)
+#     print('shape', cmitab.shape)
+#     for x in range(170):
+#         for y in range(170):cmi = np.array([0.,0.,0.])
+#     return cmitab         
