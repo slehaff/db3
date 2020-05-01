@@ -21,9 +21,11 @@ nCam = np.array([0, 0.2588, 0.9659])
 ProCam = np.array([0, 15, 65])
 Cos11 = np.cos(11/360*2*np.pi)
 Sin11 = np.sin(11/360*2*np.pi)
+Cos15 = np.cos(15/360*2*np.pi)
+Sin15 = np.sin(15/360*2*np.pi)
 Pix = .001 # Pixel size
-PhiMin = 30 # Ref Min
-PhiMax = 255
+# PhiMin = 30 # Ref Min
+# PhiMax = 255
 RefLength = 21.782 # Ref Max
 YrefStart = 48.846
 deltaref = .2138
@@ -60,9 +62,7 @@ def getcmi(x,y):
 
 def getmref(cmi):
     mref = np.array([0,0,0])
-    # mref = Cam + np.dot(nR, (Cam-COr))/np.dot(nR, (Cam-cmi))*(Cam-cmi)
     mref =  np.multiply(-55/np.dot(cmi,nR), cmi)
-    print('cmi dot nR:', np.dot(cmi, nR))
     mref = np.add(mref, Cam)
     return(mref)
 
@@ -75,18 +75,20 @@ def getProI():
     return(ProI)
 
 
-def getcni(cmi,phi):
+def getcni(cmi,phi, phimax, phimin):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
-    l= (ProI- cmi)/np.linalg.norm(ProI-cmi)
+    Cmi = cmi+Cam
+    l= (ProI- Cmi)/np.linalg.norm(ProI-Cmi)
     print('l:', l)
-    deltaphi = (PhiMax-PhiMin)/170
-    cni[0] = phi/deltaphi #pixels
-    print('cni[0]:', cni[0])
-
-    cni[1] = cni[0]/l[1]*l[0]
+    deltaphi = (phimax-phimin)/170
+    print('deltaphi:', deltaphi)
+    cni[1] = Pix*phi/deltaphi*Cos15+cmo[1]*Cos15 #pixels
     print('cni[1]:', cni[1])
-    cni = 0
+    t = (cni[1]-cmi[1])/l[1]
+    print('Cmi:',Cmi)
+    cni =  np.add(cmi ,t*l)
+    print('t:',t,'cni:', cni)
     return(cni)
 
 
@@ -146,16 +148,17 @@ def threedpoints(unwrapfile):
         print('j:', j)
 
 
-def test3dpoints(unwrapfile):
+def test3dpoints(unwrapfile, ref_unwrapfile):
     # Read 4 sample points:
     unwrap = np.load(unwrapfile)
+    refunwrap = np.load(ref_unwrapfile)
     ProI = getProI()
-    print('50,50, unwrap(50,50):', unwrap[50,50])
-    print('70,50, unwrap(70,50):', unwrap[70,50])
-    print('50,70, unwrap(50,70):', unwrap[50,70])
-    print('100,100, unwrap(100,100):', unwrap[100,100])
-    print('150,150, unwrap(150,150):', unwrap[150,150])
-    print('150,100, unwrap(150,100):', unwrap[150,100])
+    # print('50,50, unwrap(50,50):', unwrap[50,50])
+    # print('70,50, unwrap(70,50):', unwrap[70,50])
+    # print('50,70, unwrap(50,70):', unwrap[50,70])
+    # print('100,100, unwrap(100,100):', unwrap[100,100])
+    # print('150,150, unwrap(150,150):', unwrap[150,150])
+    # print('150,100, unwrap(150,100):', unwrap[150,100])
     plist = [[0,0],[0,169],[169,0],[20,20],[50,50],[70,50],[50,70],[100,100],[100,150],[150,150],[150,100],[169,169]]
     cmilist =[]
     x= []
@@ -168,8 +171,13 @@ def test3dpoints(unwrapfile):
     print(len(plist))
     for i in range(len(plist)):
         cmi = getcmi(plist[i][0], plist[i][1])
-        getcni(cmi, unwrap[plist[i][0], plist[i][1]])
-        print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
+        # cmi = cmi + Cam
+        print('cmi:', cmi)
+        PhiMin = refunwrap[0,0]
+        PhiMax = refunwrap[169,169]
+        print('minmax:', PhiMax, PhiMin)
+        getcni((cmi), unwrap[plist[i][0], plist[i][1]], PhiMin, PhiMax)
+        # print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
         cmilist.append(cmi)
         x3.append( cmi[0])
         y3.append(cmi[1])
@@ -178,7 +186,7 @@ def test3dpoints(unwrapfile):
         # y.append(0)
         # z.append(0)
         mref = getmref(cmi)
-        print('mref:', mref)
+        # print('mref:', mref)
         x.append( mref[0])
         y.append(mref[1])
         z.append(mref[2])
@@ -202,4 +210,4 @@ def test3dpoints(unwrapfile):
 # makecmitable()
 unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(1)+'/unwrap.npy'
 ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
-test3dpoints(unwfile)
+test3dpoints(unwfile, ref_unwfile)
