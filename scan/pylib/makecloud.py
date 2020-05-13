@@ -90,18 +90,12 @@ def getProI():
     return(ProI)
 
 
-def getcni(cmi,phi, phimax, phimin):
+def getcni(cmi,NI):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
     Cmi = cmi+Cam
     l= (ProIT- Cmi)/np.linalg.norm(ProIT-Cmi)
-    # print('lll:', l)
-    deltaphi = (phimin-phimax)/170
-    # print('deltaphi:', deltaphi)
-    # cni[1] = Pix*phi/deltaphi*Cos15  #+cmo[1]#-.085*Cos15 #pixels
-    # cni[1] = Pix*170*phi/phimax*Cos15
-    cni[1] = Pix*170*phi/1.1*Cos15
-    # print('cni[1]:', cni[1])
+    cni[0] = (NI-85)*Pix
     t = (cni[1]-cmi[1])/l[1]
     # print('Cmi:',Cmi)
     cni = cmi +t*l
@@ -255,6 +249,7 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
         phi = unwrap[plist[i][0], plist[i][1]]
         NI = getYref(phi,refunwrap )
         print('NI:', NI, phi)
+        cni = getcni(cmi,NI)
         # cmi = cmi + Cam
         # print('cmi:', cmi)
         PhiMin = refunwrap[0,85]
