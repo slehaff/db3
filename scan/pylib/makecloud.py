@@ -11,12 +11,14 @@ from jsoncloud import generate_json_pointcloud, generate_pointcloud
 
 Pro = np.array([0,60,85]) # projector origin
 ProI=np.array([0, 75.35837215, 27.68177481]) # Porjector origin projection
-Cam = np.array([0,0,0]) # camera origin
+ProIT= [0., -31.31212532, 0.43730021]
+Cam = np.array([0,45,20]) # camera origin
 COr = np.array([0, 15, -55])
 CamPro = np.array([15, 65])
 nR = np.array([0,0,1])
+nRT = np.array([0,0,-1])
 Cmo = np.array([0, 45.11318, 19.5776])
-cmo = np.array([0,  .11318, -.42239]) # camera image plane with cam = origo
+cmo = np.array([0,  0, .4373]) # camera image plane with cam = origo
 nCam = np.array([0, 0.2588, 0.9659])
 ProCam = np.array([0, 15, 65])
 Cos11 = np.cos(11/360*2*np.pi)
@@ -25,6 +27,10 @@ Cos15 = np.cos(15/360*2*np.pi)
 Sin15 = np.sin(15/360*2*np.pi)
 Cos75 = np.cos(75/360*2*np.pi)
 Sin75 = np.sin(75/360*2*np.pi)
+Cos165 = np.cos(165/360*2*np.pi)
+Sin165 = np.sin(165/360*2*np.pi)
+Cos0 = np.cos(0/360*2*np.pi)
+Sin0 = np.sin(0/360*2*np.pi)
 Pix = .001 # Pixel size
 # PhiMin = 30 # Ref Min
 # PhiMax = 255
@@ -38,23 +44,21 @@ rheight = 170
 
 
 def pointransform(point):
-    point[0]= point[1]
-    point[1]= point[2]
-    point[2] = 1
-    R = np.array([[Cos75,-Sin75,0],[Sin75,Cos75,0],[0,0,1]])
-    T = np.array([[1,0,-45],[0,1,-20],[0,0,1]])
+    point = np.append(point,[1])
+    R = np.array([[1,0,0,0], [0,Cos165,-Sin165,0],[0,Sin165,Cos165,0],[0,0,0,1]])
+    T = np.array([[1,0,0,0], [0,1,0,-45],[0,0,1,-20],[0,0,0,1]])
     RT = np.matmul(R,T)
     transpoint = np.matmul(RT,point)
+    transpoint = transpoint[0:3]
     return(transpoint)
 
 def vectransform(vector):
-    vector[0]= vector[1]
-    vector[1]= vector[2]
-    vector[2] = 0
-    R = np.array([[Cos75,-Sin75,0],[Sin75,Cos75,0],[0,0,1]])
-    T = np.array([[1,0,-45],[0,1,-20],[0,0,1]])
+    vector = np.append(vector,[0])
+    R = np.array([[1,0,0,0], [0,Cos165,-Sin165,0],[0,Sin165,Cos165,0],[0,0,0,1]])
+    T = np.array([[1,0,0,0], [0,1,0,-45],[0,0,1,-20],[0,0,0,1]])
     RT = np.matmul(R,T)
     transvect = np.matmul(RT,vector)
+    transvect = transvect[0:3]
     return(transvect)
 
 
@@ -62,28 +66,26 @@ def vectransform(vector):
 def getcmi(x,y):
     cmi = np.array([0.,0.,0.])    
     cmi[0] = ((x-85)*Pix)+ cmo[0]
-    cmi[1] = (((y-85)* Cos15*Pix)+ cmo[1])
-    cmi[2] = (((y-85)* Sin15*Pix)+ cmo[2])
+    cmi[1] = (((y-85)*Pix)+ cmo[1])
+    cmi[2] = (0 + cmo[2])
     # cmi = np.add(Cam,cmi)
-    print('cmi:', cmi-cmo)
+    print('cmi!:', cmi)
     return(cmi)
 
 
 def getmref(cmi):
     mref = np.array([0,0,0])
-    mref =  np.multiply(-55/np.dot(cmi,nR), cmi)
-    mref = np.add(mref, Cam)
-    # print('mref:' ,mref)
+    mref =  np.multiply(-55/np.dot(cmi,nRT), cmi)
     return(mref)
 
 
 def getProI():
     ProT = pointransform(Pro)
     CmoT = pointransform(Cmo)
-    vecA = Pro-Cmo
-    vecB = np.array([0, Cos15, Sin15])
+    vecA = CmoT-ProT
+    vecB = np.array([0, 1, 0])
     ProI = Cmo + np.dot(vecA, vecB)/(np.linalg.norm(vecB))*vecB
-    # print('ProI:', ProI)
+    print('ProI:', ProI)
     
     return(ProI)
 
@@ -92,7 +94,7 @@ def getcni(cmi,phi, phimax, phimin):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
     Cmi = cmi+Cam
-    l= (ProI- Cmi)/np.linalg.norm(ProI-Cmi)
+    l= (ProIT- Cmi)/np.linalg.norm(ProIT-Cmi)
     # print('lll:', l)
     deltaphi = (phimin-phimax)/170
     # print('deltaphi:', deltaphi)
@@ -131,6 +133,14 @@ def getq(cmi):
     q= Cam + np.dot(ProCam, nR)/np.dot(cmi,nR)*cmi
     return(q)
 
+def getYref(phi, refunwrap):
+    for i in range (170):
+        delta = phi- refunwrap[i,i]
+        if delta < .005  :
+            break
+        else:
+            i+=1
+    return(i)
 
 def calcm3dpoint(que ,mref, nref,Cmi):
     PQ = que-Pro
@@ -164,21 +174,65 @@ def calcm3dpoint(que ,mref, nref,Cmi):
 
 #         print('j:', j)
 
-def getxref(phi,reference):
-    for i in range(170):
-        while (phi -reference[i, 85])< .05:
-            i+=1
+# def getxref(phi,reference):
+#     for i in range(170):
+#         while (phi -reference[i, 85])< .05:
+#             i+=1
 
-    return(i)
+#     return(i)
+
+
+def testtransform():
+    L12 = np.array([0,10,20])
+    L12 = pointransform(L12)
+    print('L12:', L12)
+    L12 = [0,20,10]
+    L12 = pointransform(L12)
+    print('L21:', L12)
+    L12 = [0,-10,20]
+    L12 = pointransform(L12)
+    print('L-12:', L12)
+    L12 = [0,-10,-20]
+    L12 = pointransform(L12)
+    print('L-1-2:', L12)
+    L12 = [0,40,20]
+    L12 = pointransform(L12)
+    print('L42:', L12)
+    L12 = [0,-20,40]
+    L12 = pointransform(L12)
+    print('L-24:', L12)
+
+
+def testtransvect():
+    V12 = np.array([0, Cos15, Sin15])
+    V12T = vectransform(V12)
+    print('V12T:', V12, V12T)
+    V12 = np.array([0, 1, 0])
+    V12T = vectransform(V12)
+    print('V12T:', V12, V12T)
+    V12 = np.array([0, 0, 1])
+    V12T = vectransform(V12)
+    print('V12T:', V12, V12T)
+
 
 def test3dpoints(unwrapfile, ref_unwrapfile):
     # Read 4 sample points:
     unwrap = np.load(unwrapfile)
     refunwrap = np.load(ref_unwrapfile)
-    ProI = getProI()
+    ProT = pointransform(Pro)
+    print('ProT:', ProT)
+    CmoT = pointransform(Cmo)
+    print('CmoT:', CmoT)
+    CamT = pointransform(Cam)
+    print('CamT:', CamT)
+    RefP = [0,0,-35]
+    RefPT = pointransform(RefP)
+    print('RefPT:', RefPT)
+    ProIT = pointransform(ProI)
+    print('ProIT:', ProIT)
 
     # print('150,100, unwrap(150,100):', unwrap[150,100])
-    plist = [[85,0], [85,85],[85,169]]#,[85,169],[169,169],[0,169],[0,0],[0,169],[169,0],[169,169],[20,20],[50,50],[70,50],[50,70],[100,100],[100,150],[150,150],[150,100]]
+    plist = [[0,85], [85,85],[169,85]]#,[85,169],[169,169],[0,169],[0,0],[0,169],[169,0],[169,169],[20,20],[50,50],[70,50],[50,70],[100,100],[100,150],[150,150],[150,100]]
     cmilist =[]
     x= []
     y= []
@@ -195,17 +249,19 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     x5= [cmo[0]]
     y5= [cmo[1]]
     z5= [cmo[2]]
-    Cma = [0,45,20]
     # print(len(plist))
     for i in range(len(plist)):
         cmi = getcmi(plist[i][0], plist[i][1])
+        phi = unwrap[plist[i][0], plist[i][1]]
+        NI = getYref(phi,refunwrap )
+        print('NI:', NI, phi)
         # cmi = cmi + Cam
         # print('cmi:', cmi)
         PhiMin = refunwrap[0,85]
         PhiMax = refunwrap[169,85]
         # xref= getxref(unwrap[plist[i][1], plist[i][0]], refunwrap)
         # print('phi:', unwrap[plist[i][1], plist[i][0]],  'xref:', xref)
-        # print('minmax:', PhiMax, PhiMin)
+        print('minmax:', PhiMax, PhiMin)
         cni = getcni(cmi, unwrap[plist[i][1], plist[i][0]], PhiMax, PhiMin)
         # print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
         cmilist.append(cmi)
@@ -276,6 +332,8 @@ unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(1)+'/unwra
 ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
 test3dpoints(unwfile, ref_unwfile)
 # makereference(ref_unwfile)
+# testtransform()
+# testtransvect()
 
 
 
