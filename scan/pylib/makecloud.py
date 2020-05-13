@@ -97,7 +97,6 @@ def getcni(cmi,NI):
     l= (ProIT- Cmi)/np.linalg.norm(ProIT-Cmi)
     cni[0] = (NI-85)*Pix
     t = (cni[1]-cmi[1])/l[1]
-    # print('Cmi:',Cmi)
     cni = cmi +t*l
     # cni = cnvcni(cni[1], cni[0])
     return(cni)
