@@ -99,8 +99,6 @@ def getcni(cmi,NI):
     t = (cni[1]-cmi[1])/l[1]
     # print('Cmi:',Cmi)
     cni = cmi +t*l
-    # print('cni:', cni, 'cmi:', cmi, 't:', t)
-    # print('l:', l)
     # cni = cnvcni(cni[1], cni[0])
     # print( 'cmi:', cmi, 'cni:', cni)
     return(cni)
