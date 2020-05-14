@@ -121,9 +121,9 @@ def unwrap(request):
     return render(request, 'scantemplate.html')
 
 
-for i in range(5):
+for i in range(25):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)

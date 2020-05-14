@@ -143,9 +143,9 @@ def calcm3dpoint(que ,mref, nref,Cmi):
     PQ = que-ProT
     QMref = mref-que
     MNref = mref-nref
-    nom = np.linalg.norm(PQ)*np.linalg.norm(QMref)
-    denom = (np.linalg.norm(PQ+MNref))
-    m3d=que + np.linalg.norm(PQ)*np.linalg.norm(QMref)/(np.linalg.norm(PQ+MNref))*(Cmi-Cam)/np.linalg.norm(Cmi-Cam)
+    # nom = np.linalg.norm(PQ)*np.linalg.norm(QMref)
+    # denom = (np.linalg.norm(PQ+MNref))
+    m3d=que + np.linalg.norm(PQ)*np.linalg.norm(QMref)/(np.linalg.norm(PQ+MNref))*(Cmi)/np.linalg.norm(Cmi)
     return(m3d)
 
 # def getm3dpoint(x,y,phi):
@@ -208,6 +208,34 @@ def testtransvect():
     V12 = np.array([0, 0, 1])
     V12T = vectransform(V12)
     print('V12T:', V12, V12T)
+
+
+def make3dpoints(unwrapfil, ref_unwrapfile):
+    unwrap = np.load(unwrapfile)
+    refunwrap = np.load(ref_unwrapfile)
+    ProT = pointransform(Pro)
+    print('ProT:', ProT)
+    CmoT = pointransform(Cmo)
+    print('CmoT:', CmoT)
+    CamT = pointransform(Cam)
+    print('CamT:', CamT)
+    RefP = [0,0,-35]
+    RefPT = pointransform(RefP)
+    print('RefPT:', RefPT)
+    ProIT = pointransform(ProI)
+    print('ProIT:', ProIT)
+    for i in range(rwidth):
+        for j in range(rheight):
+            cmi = getcmi(i, j)
+            phi = unwrap[i,j]
+            NI = getYref(phi,refunwrap )
+            print('NI:', NI, phi)
+            cni = getcni(cmi,NI)
+            que = getq(cmi)
+            mref = getmref(cmi)
+            nref = getnref(cni)
+            M3d= calcm3dpoint(que, mref, nref, cmi)
+
 
 
 def test3dpoints(unwrapfile, ref_unwrapfile):
@@ -286,7 +314,7 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
         # print('cni:', cni)
         # print('cmi:', cmi)
         Cmi = cmi + Cam
-        M3d= calcm3dpoint(que, mref, nref, Cmi)
+        M3d= calcm3dpoint(que, mref, nref, cmi)
         print('M3d:', M3d)
         x5.append( M3d[0])
         y5.append(M3d[1])
