@@ -93,11 +93,16 @@ def getProI():
 def getcni(cmi,NI):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
-    Cmi = cmi+Cam
+    Cmi = cmi
+    print('ProIT-Cmi:', (ProIT-Cmi))
     l= (ProIT- Cmi)/np.linalg.norm(ProIT-Cmi)
+    print('l:', l)
+    # cni[2]= cmi[2]
     cni[0] = (NI-85)*Pix
     t = (cni[1]-cmi[1])/l[1]
+    print('t:', t)
     cni = cmi +t*l
+    print('cni:!!', cni)
     # cni = cnvcni(cni[1], cni[0])
     return(cni)
 
@@ -113,14 +118,15 @@ def cnvcni(x,y):
 
 def getnref(cni):
     nref = np.array([0,0,0])
-    nref =  np.multiply(-55/np.dot(cni,nR), cni)
-    nref = np.add(nref, Cam)
+    nref =  np.multiply(-55/np.dot(cni,nRT), cni)
+    # nref = np.add(nref, Cam)
     return(nref)
 
 
 
 def getq(cmi):
-    q= Cam + np.dot(ProCam, nR)/np.dot(cmi,nR)*cmi
+    ProT = pointransform(Pro)
+    q=  np.dot(ProT, nRT)/np.dot(cmi,nRT)*cmi
     return(q)
 
 def getYref(phi, refunwrap):
@@ -133,14 +139,13 @@ def getYref(phi, refunwrap):
     return(i)
 
 def calcm3dpoint(que ,mref, nref,Cmi):
-    PQ = que-Pro
+    ProT = pointransform(Pro)
+    PQ = que-ProT
     QMref = mref-que
     MNref = mref-nref
     nom = np.linalg.norm(PQ)*np.linalg.norm(QMref)
     denom = (np.linalg.norm(PQ+MNref))
     m3d=que + np.linalg.norm(PQ)*np.linalg.norm(QMref)/(np.linalg.norm(PQ+MNref))*(Cmi-Cam)/np.linalg.norm(Cmi-Cam)
-    # print('PQ:',PQ, 'QMref:', QMref, 'MNref:', MNref)
-    # print('3dinfo:',nom,denom,np.linalg.norm(Cmi-Cam))
     return(m3d)
 
 # def getm3dpoint(x,y,phi):
@@ -222,7 +227,7 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     print('ProIT:', ProIT)
 
     # print('150,100, unwrap(150,100):', unwrap[150,100])
-    plist = [[0,85], [85,85],[169,85]]#,[85,169],[169,169],[0,169],[0,0],[0,169],[169,0],[169,169],[20,20],[50,50],[70,50],[50,70],[100,100],[100,150],[150,150],[150,100]]
+    plist = [[0,15], [15,25],[30,35],[45,45],[55,55],[65,65],[75,75],[85,100],[95,85],[105,115],[115,125],[125,135],[135,145],[145,155],[155,165]]
     cmilist =[]
     x= []
     y= []
@@ -253,7 +258,7 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
         # xref= getxref(unwrap[plist[i][1], plist[i][0]], refunwrap)
         # print('phi:', unwrap[plist[i][1], plist[i][0]],  'xref:', xref)
         print('minmax:', PhiMax, PhiMin)
-        cni = getcni(cmi, unwrap[plist[i][1], plist[i][0]], PhiMax, PhiMin)
+        # cni = getcni(cmi, unwrap[plist[i][1], plist[i][0]], PhiMax, PhiMin)
         # print(plist[i][0], plist[i][1], cmi, np.dot(cmi,nR))
         cmilist.append(cmi)
         mx3.append( cmi[0])
@@ -277,11 +282,12 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
         y1.append(que[1])
         z1.append(que[2])
         print(plist[i][1], plist[i][0])
-        print('cni:', cni)
-        print('cmi:', cmi)
+        print('que:', que)
+        # print('cni:', cni)
+        # print('cmi:', cmi)
         Cmi = cmi + Cam
         M3d= calcm3dpoint(que, mref, nref, Cmi)
-        # print('M3d:', M3d)
+        print('M3d:', M3d)
         x5.append( M3d[0])
         y5.append(M3d[1])
         z5.append(M3d[2])
@@ -291,10 +297,10 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     figure = plt.figure()
     ax = figure.add_subplot(111, projection = '3d')
     ax.scatter(x,y,z, c = 'r', marker = '.')
-    # ax.scatter(x1,y1,z1, c = 'b', marker = '.')
-    # ax.scatter(mx3,my3,mz3, c = 'r', marker = '.')
-    # ax.scatter(nx4,ny4,nz4, c = 'b', marker = '.')
-    # ax.scatter(x5,y5,z5, c = 'r', marker = '+')
+    ax.scatter(x1,y1,z1, c = 'b', marker = '.')
+    ax.scatter(mx3,my3,mz3, c = 'r', marker = '.')
+    ax.scatter(nx4,ny4,nz4, c = 'b', marker = '.')
+    ax.scatter(x5,y5,z5, c = 'r', marker = '+')
     # x2 = [35,-35,0,0,0, ProI[0]]
     # y2 = [0,0,0,45,60,ProI[1]]
     # z2 = [0,0,0,20,85, ProI[2]]
@@ -302,7 +308,7 @@ def test3dpoints(unwrapfile, ref_unwrapfile):
     ax.set_xlabel('Xaxis')
     ax.set_ylabel('Yaxis')
     ax.set_zlabel('Zaxis')
-    # plt.show()
+    plt.show()
 # def getcni(x,y):
 #     cni = np.array([0.,0.,0.])    
 #     cni[0] = Cmo[0]+(x-85)*Pix
