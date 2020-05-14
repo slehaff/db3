@@ -69,7 +69,7 @@ def getcmi(x,y):
     cmi[1] = (((y-85)*Pix)+ cmo[1])
     cmi[2] = (0 + cmo[2])
     # cmi = np.add(Cam,cmi)
-    print('cmi!:', cmi)
+    # print('cmi!:', cmi)
     return(cmi)
 
 
@@ -85,7 +85,7 @@ def getProI():
     vecA = CmoT-ProT
     vecB = np.array([0, 1, 0])
     ProI = Cmo + np.dot(vecA, vecB)/(np.linalg.norm(vecB))*vecB
-    print('ProI:', ProI)
+    # print('ProI:', ProI)
     
     return(ProI)
 
@@ -94,15 +94,15 @@ def getcni(cmi,NI):
     cni = np.array([0.,0.,0.])
     l = np.array([0.,0.,0.])
     Cmi = cmi
-    print('ProIT-Cmi:', (ProIT-Cmi))
+    # print('ProIT-Cmi:', (ProIT-Cmi))
     l= (ProIT- Cmi)/np.linalg.norm(ProIT-Cmi)
-    print('l:', l)
+    # print('l:', l)
     # cni[2]= cmi[2]
     cni[0] = (NI-85)*Pix
     t = (cni[1]-cmi[1])/l[1]
-    print('t:', t)
+    # print('t:', t)
     cni = cmi +t*l
-    print('cni:!!', cni)
+    # print('cni:!!', cni)
     # cni = cnvcni(cni[1], cni[0])
     return(cni)
 
@@ -210,7 +210,8 @@ def testtransvect():
     print('V12T:', V12, V12T)
 
 
-def make3dpoints(unwrapfil, ref_unwrapfile):
+def make3dpoints(unwrapfile, ref_unwrapfile):
+    points = np.zeros((rwidth, rheight), dtype=np.float)
     unwrap = np.load(unwrapfile)
     refunwrap = np.load(ref_unwrapfile)
     ProT = pointransform(Pro)
@@ -229,14 +230,15 @@ def make3dpoints(unwrapfil, ref_unwrapfile):
             cmi = getcmi(i, j)
             phi = unwrap[i,j]
             NI = getYref(phi,refunwrap )
-            print('NI:', NI, phi)
+            # print('NI:', NI, phi)
             cni = getcni(cmi,NI)
             que = getq(cmi)
             mref = getmref(cmi)
             nref = getnref(cni)
-            M3d= calcm3dpoint(que, mref, nref, cmi)
+            points[i,j]= calcm3dpoint(que, mref, nref, cmi)[2]
+            print(i,j,points[i,j])
 
-
+    return(points)
 
 def test3dpoints(unwrapfile, ref_unwrapfile):
     # Read 4 sample points:
@@ -353,9 +355,10 @@ def makereference(ref_file):
 
 
 # makecmitable()
-unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(1)+'/unwrap.npy'
+unwfile = '/home/samir/Desktop/blender/pycode/scans/render'+ str(0)+'/unwrap.npy'
 ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
 test3dpoints(unwfile, ref_unwfile)
+# # make3dpoints(unwfile, ref_unwfile)
 # makereference(ref_unwfile)
 # testtransform()
 # testtransvect()
