@@ -5,6 +5,7 @@ import sys
 import os
 from PIL import Image
 from jsoncloud import generate_json_pointcloud, generate_pointcloud
+from makecloud import make3dpoints
 
 
 high_freq = 13
@@ -121,16 +122,19 @@ def unwrap(request):
     return render(request, 'scantemplate.html')
 
 
-for i in range(25):
+for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
     ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
+    threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
+    cv2.imwrite(folder + 'unwrap2.png', threedpoints)
     # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
+    generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
