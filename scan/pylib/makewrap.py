@@ -335,9 +335,9 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(25):
+for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
     take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
     take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 

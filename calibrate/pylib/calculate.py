@@ -8,8 +8,8 @@ from PIL import Image
 from pyntcloud import PyntCloud
 
 
-WIDTH = 400
-HEIGHT = 400
+WIDTH = 170
+HEIGHT = 170
 
 def draw(img, corners, imgpts):
     corner = tuple(corners[0].ravel())
@@ -28,7 +28,7 @@ def calculate(folder):
     # Arrays to store object points and image points from all the images.
     objpoints = []  # 3d point in real world space
     imgpoints = []  # 2d points in image plane.
-    images = glob.glob(folder+'*/image1.png', recursive= True)
+    images = glob.glob(folder+'*/blendertexture.png', recursive= True)
     print('image count:',len(images))
     for fname in images:
         img = cv2.imread(fname)
@@ -66,14 +66,14 @@ def calculate(folder):
     print('tvecs count:', len(tvecs))    
     print("rvecs:", rvecs)
     print("tvecs:", tvecs)
-    undistort(folder,mtx, dist, 400, 400)
+    undistort(folder,mtx, dist, 170, 170)
     np.savez( folder + '/cal' + '.npz', mtx=mtx, dist=dist, rvecs=rvecs, tvecs=tvecs)
     cv2.destroyAllWindows()
     return mtx, dist, rvecs, tvecs
 
 
 def undistort(folder, mtx, dist, w, h ):
-    images = glob.glob(folder + '*/image6.png', recursive= True)
+    images = glob.glob(folder + '*/blendertexture.png', recursive= True)
     for fname in images:
         img = cv2.imread(fname)
         h, w = img.shape[:2]
@@ -130,7 +130,13 @@ def worldtargets(folder):
     np.save(file_save, threedcoords, allow_pickle=False)
     generate_pointcloud(threedcoords, folder +'/worldcoords.ply' )
 
+def inv(m):
+    a, b = m.shape
+    if a != b:
+        raise ValueError("Only square matrices are invertible.")
 
+    i = np.eye(a, a)
+    return np.linalg.lstsq(m, i)[0]
 
 
 def getworldcoords(folder, mtx, m):
@@ -150,7 +156,7 @@ def getworldcoords(folder, mtx, m):
             A[2][1] = m[0][5] - getphase(fname, i, j)*m[0][1]
             A[2][2] = m[0][4] - getphase(fname, i, j)*m[0][2]
 
-            invA = np.linalg.inv(A)
+            invA = inv(A)
             if (i == 200) :
                 print('invA:', invA)
             b = np.transpose([0,0,getphase(fname, i, j)*m[0][3]])
@@ -264,14 +270,7 @@ def generate_pointcloud(worldcoords,ply_file):
     for v in range(WIDTH):
         for u in range(HEIGHT):
             # color = rgb.getpixel((u,v))
-            # Z = depth.getpixel((u,v)) / scalingFactor
-            # if Z==0: continue
-            # X = (u - centerX) * Z / focalLength
-            # Y = (v - centerY) * Z / focalLength
-            # Z = depth.getpixel((u, v)) * .44
-            Z= worldcoords[u,v][2]*100
-            if Z == 0: continue
-            Y = v # worldcoords[u,v][1]
+            # Z = depth.getpixel((u,v)) / scalingFactorythonFiles/lib/python/debugpy/no_wheels/debugpy/launcher
             X = u # worldcoords[u,v][0]
             points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,120,120,120))
     file = open(ply_file,"w")
@@ -292,7 +291,13 @@ end_header
 
 
 
-# folder ='/home/samir/db3/calibrate/static/calibrate_folder/calscans/' 
-# file_load = folder +'cal_im_folder5'+ '/worldcoords.npy'
+# folder ='/home/samir/db3/calibrate/static/calibrate_folder/old_ones/' 
+# file_load = folder + '/worldcoords.npy'
 # threedcoords= np.load(file_load)
-# generate_pointcloud(threedcoords, folder +'cal_im_folder5'+ '/worldcoords.ply' )
+# generate_pointcloud(threedcoords, folder +'cal_im_folder20'+ '/worldcoords.ply' )
+
+folder = '/home/samir/Desktop/blender/pycode/calibrate/'
+# mtx, dist, _, _ =calculate(folder)
+# undistort(folder, mtx, dist, 170, 170)
+worldtargets(folder)
+

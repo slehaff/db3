@@ -43,7 +43,8 @@ def unwrap_r(low_f_file, high_f_file, folder):
     for i in range(rheight):
         for j in range(rwidth):
             kdata[i, j] = round((high_freq/low_freq * (wraplow[i, j])- wraphigh[i, j])/(2*PI))
-            unwrapdata[i,j] = .1*(wraphigh[i, j]/np.max(wraphigh) +2*PI* kdata[i, j]/np.max(wraphigh))
+            unwrapdata[i,j] = .1*(1.1*wraphigh[i, j]/np.max(wraphigh) +2*PI* kdata[i, j]/np.max(wraphigh))
+            # unwrapdata[i,j] = .1*(0*wraphigh[i, j] +2*PI* kdata[i, j])
     # unwrapdata = np.add(wraphigh, np.multiply(2*PI,kdata) )
     print('kdata:', np.ptp(np.multiply(1,kdata)))
     print('unwrap:', np.ptp(unwrapdata))
@@ -62,30 +63,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     cv2.imwrite(folder + 'unwrap.png', im_unwrap)
     cv2.imwrite(folder + 'kdata.png', np.multiply(2*PI,kdata))
 
-# def abs_unwrap_r(low_f, high_f, output_file,  folder):
-#     filelow = folder + '/' + low_f
-#     filehigh = folder + '/' + high_f
-#     wraplow = np.load(filelow)  # To be continued
-#     wraphigh = np.load(filehigh)
-#     unwrapdata = np.zeros((rheight, rwidth), dtype=np.float)
-#     kdata = np.zeros((rheight, rwidth), dtype=np.float)
-#     # wrap1data = cv2.GaussianBlur(wrap1data, (0, 0), 3, 3)
-#     # wrap2data = cv2.GaussianBlur(wrap2data, (0, 0), 4, 4)
-#     for i in range(rheight):
-#         for j in range(rwidth):
-#             kdata[i, j] = round(
-#                 (high_freq/low_f * wraplow[i, j] - 1.0 * wraphigh[i, j])/(2.0*np.pi))
-#             unwrapdata[i, j] = 1.0 * wraplow[i, j] + 1.0*kdata[i, j]*np.pi
 
-#     print(kdata[::20, ::20])
-#     wr_save = folder + 'unwrap.npy'
-#     np.save(wr_save, unwrapdata, allow_pickle=False)
-#     print(wr_save)
-#     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
-#     unwrapdata = np.multiply(unwrapdata, 1.0)
-#     # unwrapdata = np.unwrap(np.transpose(unwrapdata))
-#     unwrapdata = cv2.GaussianBlur(unwrapdata,(0,0),3,3)
-#     cv2.imwrite(folder + output_file, unwrapdata)
 
 
 def deduct_ref(unwrap, reference, folder1, folder2):
@@ -124,17 +102,44 @@ def unwrap(request):
 
 for i in range(5):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
     deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
     threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
     cv2.imwrite(folder + 'unwrap2.png', threedpoints)
     # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
-    generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
+    # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
-    generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
+    # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
     generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
+
+
+
+# def abs_unwrap_r(low_f, high_f, output_file,  folder):
+#     filelow = folder + '/' + low_f
+#     filehigh = folder + '/' + high_f
+#     wraplow = np.load(filelow)  # To be continued
+#     wraphigh = np.load(filehigh)
+#     unwrapdata = np.zeros((rheight, rwidth), dtype=np.float)
+#     kdata = np.zeros((rheight, rwidth), dtype=np.float)
+#     # wrap1data = cv2.GaussianBlur(wrap1data, (0, 0), 3, 3)
+#     # wrap2data = cv2.GaussianBlur(wrap2data, (0, 0), 4, 4)
+#     for i in range(rheight):
+#         for j in range(rwidth):
+#             kdata[i, j] = round(
+#                 (high_freq/low_f * wraplow[i, j] - 1.0 * wraphigh[i, j])/(2.0*np.pi))
+#             unwrapdata[i, j] = 1.0 * wraplow[i, j] + 1.0*kdata[i, j]*np.pi
+
+#     print(kdata[::20, ::20])
+#     wr_save = folder + 'unwrap.npy'
+#     np.save(wr_save, unwrapdata, allow_pickle=False)
+#     print(wr_save)
+#     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
+#     unwrapdata = np.multiply(unwrapdata, 1.0)
+#     # unwrapdata = np.unwrap(np.transpose(unwrapdata))
+#     unwrapdata = cv2.GaussianBlur(unwrapdata,(0,0),3,3)
+#     cv2.imwrite(folder + output_file, unwrapdata)
