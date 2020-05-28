@@ -348,7 +348,8 @@ for i in range(0,5):
     unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/unwrap.npy'
     unwfolder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/' 
     ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
-    test3dpoints(unwfile, ref_unwfile)
+    # test3dpoints(unwfile, ref_unwfile)
+    make3dpoints(unwfile, unwfolder, ref_unwfile)
 # testfull(unwfile, unwfolder)
 # # make3dpoints(unwfile, ref_unwfile)
 # makereference(ref_unwfile)

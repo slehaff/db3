@@ -4,6 +4,8 @@ import numpy as np
 import time
 import pyntcloud
 import math
+import os.path
+from os import path
 
 
 rwidth = 170
@@ -91,7 +93,7 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
             phi_min = float(
                 min(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[2][i, j])))
             phi_range = float(phi_max - phi_min)
-            signal = float(phi_range / phi_sum)
+            signal = float(phi_range / (phi_sum+.01))
             mask[i, j] = (signal < noise_threshold)
             process[i, j] = not(mask[i, j])
             c_range[i, j] = phi_range
@@ -335,10 +337,15 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(5):
+for i in range(50):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
-    take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-    take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
+    folder = '/home/samir/Desktop/blender/pycode/calibrate/render'+ str(i)+'/'
+    if path.exists(folder):
+        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
 
+    # images = glob.glob(folder+'*/image1.png', recursive= True)
+    # print('image count:',len(images))
+    # mresults=[[0,0,0,0,0,0,0]]
+    # for fname in images:
