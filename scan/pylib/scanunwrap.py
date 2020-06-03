@@ -45,9 +45,9 @@ def unwrap_r(low_f_file, high_f_file, folder):
     for i in range(rheight):
         for j in range(rwidth):
             kdata[i, j] = round((high_freq/low_freq * (wraplow[i, j])- wraphigh[i, j])/(2*PI))
-            unwrapdata[i,j] = .1*(1.1*wraphigh[i, j]/np.max(wraphigh) +2*PI* kdata[i, j]/np.max(wraphigh))
-            # unwrapdata[i,j] = .1*(0*wraphigh[i, j] +2*PI* kdata[i, j])
-    # unwrapdata = np.add(wraphigh, np.multiply(2*PI,kdata) )
+            # unwrapdata[i,j] = .1*(1.1*wraphigh[i, j]/np.max(wraphigh) +2*PI* kdata[i, j]/np.max(wraphigh))
+            # unwrapdata[i,j] = 1*(1*wraphigh[i, j] +2*PI* kdata[i, j])
+    unwrapdata = np.add(wraphigh, np.multiply(2*PI,kdata) )
     print('kdata:', np.ptp(np.multiply(1,kdata)))
     print('unwrap:', np.ptp(unwrapdata))
     # print("I'm in unwrap_r")
@@ -60,7 +60,10 @@ def unwrap_r(low_f_file, high_f_file, folder):
     # unwrapdata = np.unwrap(np.transpose(unwrapdata))
     # unwrapdata = cv2.GaussianBlur(unwrapdata,(0,0),3,3)
     # unwrapdata = np.multiply(unwrapdata, 1.0)
-    im_unwrap = 255*unwrapdata# np.max(unwrapdata)*255)
+    maxval = np.amax(unwrapdata)
+    print('maxval:', maxval)
+    # im_unwrap = 255*unwrapdata/ maxval# np.max(unwrapdata)*255)
+    im_unwrap = 3*unwrapdata# np.max(unwrapdata)*255)
     # unwrapdata/np.max(unwrapdata)*255
     cv2.imwrite(folder + 'unwrap.png', im_unwrap)
     cv2.imwrite(folder + 'kdata.png', np.multiply(2*PI,kdata))
@@ -77,7 +80,8 @@ def deduct_ref(unwrap, reference, folder1, folder2):
     ref_data = np.load(file2)
     mask_data = np.load(maskfile)
     ref_data = np.multiply(ref_data, mask_data)
-    net_data = np.subtract(ref_data, wrap_data)
+    net_data = np.subtract(wrap_data, ref_data)
+    print('abs_unwrap:', np.amax(net_data), np.amin(net_data))
     # print('reference:', ref_data)
     # print('wrap:',wrap_data)
     # print('abs:',net_data)
@@ -86,7 +90,7 @@ def deduct_ref(unwrap, reference, folder1, folder2):
     print(net_save)
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
     # net_data = np.multiply(net_data, 1.0)
-    cv2.imwrite(folder1 + 'abs_unwrap.png', net_data)
+    cv2.imwrite(folder1 + 'abs_unwrap.png', 40*net_data)
 
 
 def unwrap(request):
@@ -102,23 +106,81 @@ def unwrap(request):
     return render(request, 'scantemplate.html')
 
 
-for i in range(50):
+def makeDDbase():
+    print('start')
+    phibase = np.zeros((rheight, rwidth,499), dtype=np.float64)
+    for u in range(rwidth):
+        for v in range(rheight):
+            print('u=', u, 'v=', v)
+            for i in range(499):
+                # print('i=',i)
+                folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
+                unwrap = np.zeros((rheight, rwidth), dtype=np.float64)
+                unwrap = np.load(folder+'unwrap.npy')   
+                phibase[u,v,i] = unwrap[u,v]
+    folder = '/home/samir/Desktop/blender/pycode/scanplanes/'
+    wr_save = folder + 'DDbase.npy'
+    np.save(wr_save, phibase, allow_pickle=False)
 
 
-    folder = '/home/samir/Desktop/blender/pycode/calibrate/render'+ str(i)+'/'
-    if path.exists(folder):
-        ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
-        unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
-        deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
-        threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
-        cv2.imwrite(folder + 'unwrap2.png', threedpoints)
-        # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
-        # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
-        generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
-        generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-        generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
-        # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
-        generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
+
+def makeDepth(folder):
+    basefile = '/home/samir/Desktop/blender/pycode/scanplanes/DDbase.npy'
+    DBase = np.load(basefile)
+    unwrap = np.load(folder+'unwrap.npy' )
+    print('DBase:', np.amax(DBase), np.amin(DBase))
+    print('unwrap:', np.amax(unwrap), np.amin(unwrap))
+    depth = np.zeros((rheight, rwidth), dtype=np.float64)
+    s=0
+    for i in range(rwidth):
+        # print('i:', i)
+        for j in range(rheight):
+            for s in range(498):
+                while(abs(unwrap[i,j]-DBase[i,j,s])>.02):
+                    s+=1
+                    if s == 498:
+                        break
+                print(i,j,unwrap[i,j],DBase[i,j,s])
+                depth[i,j]=s
+                print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
+    
+    print('depth:', np.amax(depth), np.amin(depth))
+    im_depth = depth# np.max(unwrapdata)*255)
+    cv2.imwrite(folder + 'depth.png', im_depth)
+    
+    
+
+
+
+
+print('scanumwrap')
+
+# # makeDDbase()
+for i in range(5):
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    makeDepth(folder)
+
+
+
+
+# for i in range(25):
+#     print('start')
+
+#     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+#     print(folder)
+#     if path.exists(folder):
+#         ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
+#         unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+#         deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
+#         # threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
+#         # cv2.imwrite(folder + 'unwrap2.png', threedpoints)
+#         # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
+#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
+#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
+#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
+#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
+#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
 
 

@@ -230,7 +230,7 @@ def make3dpoints(unwrapfile,unwrapfolder, ref_unwrapfile):
             mref = getmref(cmi)
             nref = getnref(cni)
             points[i,j]= calcm3dpoint(que, mref, nref, cmi)[2]
-        print(i,points[i,j])
+        # print(i,points[i,j])
     np.save(unwrapfolder + 'points.npy', points, allow_pickle=False)
     return(points)
 
@@ -343,13 +343,14 @@ def testfull(unwfile,folder):
     cv2.imwrite(folder + 'unwrap.png', full*128)
 
 # makecmitable()
-for i in range(0,5):
-    print('i:',i)
-    unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/unwrap.npy'
-    unwfolder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/' 
-    ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
-    # test3dpoints(unwfile, ref_unwfile)
-    make3dpoints(unwfile, unwfolder, ref_unwfile)
+# print('makecloud!')
+# for i in range(0,5):
+#     print('i:',i)
+#     unwfile = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/unwrap.npy'
+#     unwfolder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/' 
+#     ref_unwfile ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder/unwrap.npy'
+#     # test3dpoints(unwfile, ref_unwfile)
+#     make3dpoints(unwfile, unwfolder, ref_unwfile)
 # testfull(unwfile, unwfolder)
 # # make3dpoints(unwfile, ref_unwfile)
 # makereference(ref_unwfile)

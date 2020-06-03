@@ -164,7 +164,7 @@ def getworldcoords(folder, mtx, m):
             A[1][2] = mtx[1][2]- j
             A[2][0] = m[0][4] - getphase(fname, i, j)*m[0][0]
             A[2][1] = m[0][5] - getphase(fname, i, j)*m[0][1]
-            A[2][2] = m[0][4] - getphase(fname, i, j)*m[0][2]
+            A[2][2] = m[0][6] - getphase(fname, i, j)*m[0][2]
 
             # A[0][0] = mtx[0][0]
             # A[0][1]= 0
@@ -176,9 +176,11 @@ def getworldcoords(folder, mtx, m):
             # A[2][2] = m[0][4] - getphase(fname, i, j)*m[0][2]
 
             invA = inv(A)
+
+            b = np.transpose([0,0,(getphase(fname, i, j)*m[0][3]-1)])
             if (i == 80) :
                 print('invA:', invA)
-            b = np.transpose([0,0,getphase(fname, i, j)*m[0][3]])
+                print('b:',b)
             wrldcoords[i,j] = abs(np.transpose(np.matmul(invA, b))[2])
 
 
@@ -335,12 +337,12 @@ end_header
 # file_load = folder + '/worldcoords.npy'
 # threedcoords= np.load(file_load)
 # generate_pointcloud(threedcoords, folder +'cal_im_folder20'+ '/worldcoords.ply' )
-
-folder = '/home/samir/Desktop/blender/pycode/scanspheres/'
+print('calculate.py')
+folder = '/home/samir/Desktop/blender/pycode/scans/'
 calfolder = '/home/samir/Desktop/blender/pycode/calibrate/'
-mtx, dist, _, _ =calculate(calfolder)
-undistort(calfolder, mtx, dist, 170, 170)
-worldtargets(calfolder)
+# mtx, dist, _, _ =calculate(calfolder)
+# undistort(calfolder, mtx, dist, 170, 170)
+# worldtargets(calfolder)
 mtx,_,_,_ = loadnpz(calfolder)
 m = np.load(calfolder+'m_file.npy', allow_pickle=True)
 print(mtx)
