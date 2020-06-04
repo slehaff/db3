@@ -108,11 +108,11 @@ def unwrap(request):
 
 def makeDDbase():
     print('start')
-    phibase = np.zeros((rheight, rwidth,499), dtype=np.float64)
+    phibase = np.zeros((rheight, rwidth,49), dtype=np.float64)
     for u in range(rwidth):
         for v in range(rheight):
             print('u=', u, 'v=', v)
-            for i in range(499):
+            for i in range(49):
                 # print('i=',i)
                 folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
                 unwrap = np.zeros((rheight, rwidth), dtype=np.float64)
@@ -131,18 +131,19 @@ def makeDepth(folder):
     print('DBase:', np.amax(DBase), np.amin(DBase))
     print('unwrap:', np.amax(unwrap), np.amin(unwrap))
     depth = np.zeros((rheight, rwidth), dtype=np.float64)
-    s=0
     for i in range(rwidth):
         # print('i:', i)
         for j in range(rheight):
-            for s in range(498):
-                while(abs(unwrap[i,j]-DBase[i,j,s])>.02):
+            s=0
+            for s in range(48):
+                if (abs(unwrap[i,j]-DBase[i,j,s])<.2):
+                    break
+                else:
                     s+=1
-                    if s == 498:
-                        break
-                print(i,j,unwrap[i,j],DBase[i,j,s])
-                depth[i,j]=s
-                print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
+
+            print(i,j,unwrap[i,j],DBase[i,j,s])
+            depth[i,j]=s
+            print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
     
     print('depth:', np.amax(depth), np.amin(depth))
     im_depth = depth# np.max(unwrapdata)*255)
@@ -155,7 +156,7 @@ def makeDepth(folder):
 
 print('scanumwrap')
 
-# # makeDDbase()
+# makeDDbase()
 for i in range(5):
     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     makeDepth(folder)
@@ -163,10 +164,10 @@ for i in range(5):
 
 
 
-# for i in range(25):
+# for i in range(50):
 #     print('start')
 
-#     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+#     folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
 #     print(folder)
 #     if path.exists(folder):
 #         ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
