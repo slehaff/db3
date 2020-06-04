@@ -108,11 +108,11 @@ def unwrap(request):
 
 def makeDDbase():
     print('start')
-    phibase = np.zeros((rheight, rwidth,49), dtype=np.float64)
+    phibase = np.zeros((rheight, rwidth,199), dtype=np.float64)
     for u in range(rwidth):
         for v in range(rheight):
             print('u=', u, 'v=', v)
-            for i in range(49):
+            for i in range(199):
                 # print('i=',i)
                 folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
                 unwrap = np.zeros((rheight, rwidth), dtype=np.float64)
@@ -135,8 +135,8 @@ def makeDepth(folder):
         # print('i:', i)
         for j in range(rheight):
             s=0
-            for s in range(48):
-                if (abs(unwrap[i,j]-DBase[i,j,s])<.2):
+            for s in range(198):
+                if (abs(unwrap[i,j]-DBase[i,j,s])<.25):
                     break
                 else:
                     s+=1
@@ -154,38 +154,74 @@ def makeDepth(folder):
 
 
 
+
+
+
+def depth(scanfolder):
+    for i in range(25):
+        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        makeDepth(folder)
+
+
+def unw(scanfolder):
+    for i in range(199):
+        print('start')
+
+        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        print(folder)
+        if path.exists(folder):
+            ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
+            unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+            deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
+            # threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
+            # cv2.imwrite(folder + 'unwrap2.png', threedpoints)
+            # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
+
+
+def makeclouds(scanfolder):
+     for i in range(25):
+        print('start')
+        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        print(folder)
+        if path.exists(folder):
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
+   
+
 print('scanumwrap')
-
+# unw('scanplanes')
 # makeDDbase()
-for i in range(5):
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    makeDepth(folder)
+depth('scans')
+makeclouds('scans')
 
 
 
 
-# for i in range(50):
-#     print('start')
-
-#     folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
-#     print(folder)
-#     if path.exists(folder):
-#         ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
-#         unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
-#         deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
-#         # threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
-#         # cv2.imwrite(folder + 'unwrap2.png', threedpoints)
-#         # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
-#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
-#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
-#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-#         generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'abs_unwrap.png', folder +'pointcl-abs-unw.ply')
-#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
-#         # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+#########################################################################################################################
 # def abs_unwrap_r(low_f, high_f, output_file,  folder):
 #     filelow = folder + '/' + low_f
 #     filehigh = folder + '/' + high_f
