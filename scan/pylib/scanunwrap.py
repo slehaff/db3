@@ -106,13 +106,13 @@ def unwrap(request):
     return render(request, 'scantemplate.html')
 
 
-def makeDDbase():
+def makeDDbase(count):
     print('start')
-    phibase = np.zeros((rheight, rwidth,199), dtype=np.float64)
+    phibase = np.zeros((rheight, rwidth,count), dtype=np.float64)
     for u in range(rwidth):
         for v in range(rheight):
             print('u=', u, 'v=', v)
-            for i in range(199):
+            for i in range(count):
                 # print('i=',i)
                 folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
                 unwrap = np.zeros((rheight, rwidth), dtype=np.float64)
@@ -124,7 +124,7 @@ def makeDDbase():
 
 
 
-def makeDepth(folder):
+def makeDepth(folder, basecount):
     basefile = '/home/samir/Desktop/blender/pycode/scanplanes/DDbase.npy'
     DBase = np.load(basefile)
     unwrap = np.load(folder+'unwrap.npy' )
@@ -135,8 +135,8 @@ def makeDepth(folder):
         # print('i:', i)
         for j in range(rheight):
             s=0
-            for s in range(198):
-                if (abs(unwrap[i,j]-DBase[i,j,s])<.25):
+            for s in range(basecount-1):
+                if (abs(unwrap[i,j]-DBase[i,j,s])<.15):
                     break
                 else:
                     s+=1
@@ -157,14 +157,14 @@ def makeDepth(folder):
 
 
 
-def depth(scanfolder):
-    for i in range(25):
+def depth(scanfolder, count, basecount):
+    for i in range(count):
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
-        makeDepth(folder)
+        makeDepth(folder, basecount)
 
 
-def unw(scanfolder):
-    for i in range(199):
+def unw(scanfolder, count):
+    for i in range(count):
         print('start')
 
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
@@ -184,8 +184,8 @@ def unw(scanfolder):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
 
-def makeclouds(scanfolder):
-     for i in range(25):
+def makeclouds(scanfolder, count):
+     for i in range(count):
         print('start')
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
         print(folder)
@@ -199,10 +199,12 @@ def makeclouds(scanfolder):
    
 
 print('scanumwrap')
-# unw('scanplanes')
-# makeDDbase()
-depth('scans')
-makeclouds('scans')
+# unw('scanplanes', 199)
+# makeDDbase(199)
+
+unw('scans', 90)
+depth('scans', 90, 199)
+makeclouds('scans', 90)
 
 
 

@@ -65,7 +65,9 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
     mask = np.zeros((rheight, rwidth), dtype=np.bool)
     process = np.zeros((rheight, rwidth), dtype=np.bool)
     c_range = np.zeros((rheight, rwidth), dtype=np.float)
-    depth = np.zeros((rheight, rwidth), dtype=np.float)
+    nom = np.zeros((rheight, rwidth), dtype=np.float)
+    denom = np.zeros((rheight, rwidth), dtype=np.float)
+    
 
     noise_threshold = 0.1
 
@@ -116,7 +118,7 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
             # mask[i, j] = (signal < noise_threshold)
             # process[i, j] = not(mask[i, j])
             # c_range[i, j] = phi_range
-            if True: # process[i, j]:
+            if True:#process[i, j]:
                 wrap[i, j] = np.arctan2(nom[i,j],denom[i,j])
                 if wrap[i, j] < 0:
                     wrap[i, j] += 2*np.pi
@@ -132,6 +134,14 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
     np.save(file_path, process, allow_pickle=False)
     file_path = folder + '/' + numpy_file[:-4] + '_c_range.npy'
     np.save(file_path, c_range, allow_pickle=False)
+    nom_file = folder + '/' + str(offset) + 'nom.png'
+    cv2.imwrite(nom_file, nom)
+    nom_file = folder + '/' + str(offset) + 'nom.npy'
+    np.save(nom_file, nom, allow_pickle=False)
+    denom_file = folder + '/' + str(offset) + 'denom.png'
+    cv2.imwrite(denom_file, denom)
+    denom_file = folder + '/' + str(offset) + 'denom.npy'
+    np.save(denom_file, denom, allow_pickle=False)
     png_file = folder + '/' + png_file
     cv2.imwrite(png_file, im_wrap)
     mask_file = folder + '/' + str(offset) + 'mask.png'
@@ -248,9 +258,9 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(199):
+for i in range(90):
 
-    folder = '/home/samir/Desktop/blender/pycode/scanplanes/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     if path.exists(folder):
         take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
         take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
