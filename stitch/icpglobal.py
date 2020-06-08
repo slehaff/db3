@@ -33,8 +33,8 @@ def preprocess_point_cloud(pcd, voxel_size):
 
 def prepare_dataset(voxel_size):
     print(":: Load two point clouds and disturb initial pose.")
-    source = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans/render202/pointcl.ply')
-    target = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans/render203/pointcl.ply')
+    source = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans89/render0/pointcl-depth.ply')
+    target = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans89/render3/pointcl-depth.ply')
     trans_init = np.asarray([[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0],
                              [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
     source.transform(trans_init)

@@ -258,7 +258,7 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(90):
+for i in range(100):
 
     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     if path.exists(folder):

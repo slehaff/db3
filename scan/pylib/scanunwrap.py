@@ -202,9 +202,9 @@ print('scanumwrap')
 # unw('scanplanes', 199)
 # makeDDbase(199)
 
-unw('scans', 90)
-depth('scans', 90, 199)
-makeclouds('scans', 90)
+unw('scans', 100)
+depth('scans', 100, 199)
+makeclouds('scans', 100)
 
 
 
