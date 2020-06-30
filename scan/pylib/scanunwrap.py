@@ -198,13 +198,13 @@ def makeclouds(scanfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
 
-print('scanumwrap')
-# unw('scanplanes', 199)
-# makeDDbase(199)
+# print('scanumwrap')
+# # unw('scanplanes', 199)
+# # makeDDbase(199)
 
-unw('scans', 100)
-depth('scans', 100, 199)
-makeclouds('scans', 100)
+# unw('scans99', 100)
+# depth('scans99', 100, 199)
+# makeclouds('scans99', 100)
 
 
 

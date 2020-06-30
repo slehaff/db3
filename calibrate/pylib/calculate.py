@@ -337,20 +337,20 @@ end_header
 # file_load = folder + '/worldcoords.npy'
 # threedcoords= np.load(file_load)
 # generate_pointcloud(threedcoords, folder +'cal_im_folder20'+ '/worldcoords.ply' )
-print('calculate.py')
-folder = '/home/samir/Desktop/blender/pycode/scans/'
-calfolder = '/home/samir/Desktop/blender/pycode/calibrate/'
-# mtx, dist, _, _ =calculate(calfolder)
-# undistort(calfolder, mtx, dist, 170, 170)
-# worldtargets(calfolder)
-mtx,_,_,_ = loadnpz(calfolder)
-m = np.load(calfolder+'m_file.npy', allow_pickle=True)
-print(mtx)
-print(m[0])
-coords = getworldcoords(folder+'render1',mtx,m)
-print(coords[10,70])
-cv2.imwrite(folder+'render1' + '/unwrap3.png', coords)
-generate_pointcloud(folder+'render1/' + 'blendertexture.png', folder+'render1/' + '5mask.png', folder+'render1/' + 'unwrap3.png', folder+'render1/' +'pointcl-3.ply')
+# print('calculate.py')
+# folder = '/home/samir/Desktop/blender/pycode/scans/'
+# calfolder = '/home/samir/Desktop/blender/pycode/calibrate/'
+# # mtx, dist, _, _ =calculate(calfolder)
+# # undistort(calfolder, mtx, dist, 170, 170)
+# # worldtargets(calfolder)
+# mtx,_,_,_ = loadnpz(calfolder)
+# m = np.load(calfolder+'m_file.npy', allow_pickle=True)
+# print(mtx)
+# print(m[0])
+# coords = getworldcoords(folder+'render1',mtx,m)
+# print(coords[10,70])
+# cv2.imwrite(folder+'render1' + '/unwrap3.png', coords)
+# generate_pointcloud(folder+'render1/' + 'blendertexture.png', folder+'render1/' + '5mask.png', folder+'render1/' + 'unwrap3.png', folder+'render1/' +'pointcl-3.ply')
 
 
 
