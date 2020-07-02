@@ -65,7 +65,7 @@ def scan(request):
             else:
                 messenger.scan_mess()
                 take_scan()
-                unwrap2()
+                # unwrap2()
                 # process the data in form.cleaned_data as required
                 # ...
                 # redirect to a new URL:
@@ -86,7 +86,7 @@ def take_scan():
     print('start take')
     # scan_mess()
     t.join()
-    scan_wrap(folder=folder)
+    # scan_wrap(folder=folder)
     return 
 
 def take_gamma():

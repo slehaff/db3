@@ -64,7 +64,7 @@ def new_receive_pi_data(n, to_folder):
         conn.close()
         server_socket.close()
         mov_files(to_folder)
-        print('closed')
+        print('closed!')
 
 
 
