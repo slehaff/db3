@@ -37,7 +37,7 @@ def new_receive_pi_data(n, to_folder):
     print(to_folder)
     print('new receive called')
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0', 8001))
+    server_socket.bind(('192.168.0.33', 8001))
     server_socket.listen(0)
     conn, adr = server_socket.accept()
     i = 0
