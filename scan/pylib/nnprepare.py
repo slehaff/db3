@@ -39,5 +39,5 @@ def nn4folders(inpfolder, outfolder, count):
 inpfolder = '/home/samir/Desktop/blender/pycode/'+'scans'+'/'
 outfolder1 = '/home/samir/Desktop/blender/pycode/'+'new1'+'/1/'
 outfolder4 = '/home/samir/Desktop/blender/pycode/'+'new1'+'/4/'
-# nn1folders(inpfolder,outfolder1,100)
-nn4folders(inpfolder,outfolder4,100)
+nn1folders(inpfolder,outfolder1,465)
+nn4folders(inpfolder,outfolder4,465)

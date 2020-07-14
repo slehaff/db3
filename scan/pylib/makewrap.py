@@ -84,6 +84,8 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
         im_arr[i] = gray
     wrap = np.zeros((rheight, rwidth), dtype=np.float)
     im_wrap = np.zeros((rheight, rwidth), dtype=np.float)
+    nom = np.zeros((rheight, rwidth), dtype=np.float)
+    denom = np.zeros((rheight, rwidth), dtype=np.float)
     for i in range(rheight):
         for j in range(rwidth):
             phi_sum = float(int(im_arr[0][i, j]) + int(im_arr[1]
@@ -100,6 +102,8 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
             if process[i, j]:
                 wrap[i, j] = np.arctan2(
                     1.0 * (1.0*im_arr[1][i, j]-1.0*im_arr[3][i, j]), (1.0*im_arr[0][i, j] - 1.0*im_arr[2][i, j]))
+                nom[i,j]= 1.0 * (1.0*im_arr[1][i, j]-1.0*im_arr[3][i, j])
+                denom[i,j] = (1.0*im_arr[0][i, j] - 1.0*im_arr[2][i, j])
                 if wrap[i, j] < 0:
                     wrap[i, j] += 2*np.pi
                 im_wrap[i, j] = 128/np.pi * wrap[i, j]
@@ -118,6 +122,14 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
     cv2.imwrite(png_file, im_wrap)
     mask_file = folder + '/' + str(offset) + 'mask.png'
     cv2.imwrite(mask_file, mask*128)
+    nom_file = folder + '/' + str(offset) + 'nom.png'
+    cv2.imwrite(nom_file, nom)
+    nom_file = folder + '/' + str(offset) + 'nom.npy'
+    np.save(nom_file, nom, allow_pickle=False)
+    denom_file = folder + '/' + str(offset) + 'denom.png'
+    cv2.imwrite(denom_file, denom)
+    denom_file = folder + '/' + str(offset) + 'denom.npy'
+    np.save(denom_file, denom, allow_pickle=False)
     cv2.destroyAllWindows()
     print(c_range)
     print(mask)
@@ -336,15 +348,16 @@ def testarctan(folder):
 # gray2 = cv2.cvtColor(image2, cv2.COLOR_BGR2GRAY)
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
+#############################################################################################################################
+# process files
 
-# for i in range(26):
+for i in range(469):
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    if path.exists(folder):
+        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
-#     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-#     if path.exists(folder):
-#         take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-#         take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
-
-
+#############################################################################################################################
     # images = glob.glob(folder+'*/image1.png', recursive= True)
     # print('image count:',len(images))
     # mresults=[[0,0,0,0,0,0,0]]

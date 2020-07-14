@@ -128,8 +128,8 @@ def makeDepth(folder, basecount):
     basefile = '/home/samir/Desktop/blender/pycode/scanplanes/DDbase.npy'
     DBase = np.load(basefile)
     unwrap = np.load(folder+'unwrap.npy' )
-    print('DBase:', np.amax(DBase), np.amin(DBase))
-    print('unwrap:', np.amax(unwrap), np.amin(unwrap))
+    # print('DBase:', np.amax(DBase), np.amin(DBase))
+    # print('unwrap:', np.amax(unwrap), np.amin(unwrap))
     depth = np.zeros((rheight, rwidth), dtype=np.float64)
     for i in range(rwidth):
         # print('i:', i)
@@ -141,11 +141,11 @@ def makeDepth(folder, basecount):
                 else:
                     s+=1
 
-            print(i,j,unwrap[i,j],DBase[i,j,s])
+            # print(i,j,unwrap[i,j],DBase[i,j,s])
             depth[i,j]=s
-            print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
+            # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
     
-    print('depth:', np.amax(depth), np.amin(depth))
+    # print('depth:', np.amax(depth), np.amin(depth))
     im_depth = depth# np.max(unwrapdata)*255)
     cv2.imwrite(folder + 'depth.png', im_depth)
     
@@ -159,6 +159,7 @@ def makeDepth(folder, basecount):
 
 def depth(scanfolder, count, basecount):
     for i in range(count):
+        print('progress:', str(i))
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
         makeDepth(folder, basecount)
 
@@ -202,9 +203,9 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-# unw('scans99', 100)
-# depth('scans99', 100, 199)
-# makeclouds('scans99', 100)
+unw('scans', 465)
+depth('scans', 465, 199)
+makeclouds('scans', 465)
 
 
 
