@@ -164,6 +164,13 @@ def depth(scanfolder, count, basecount):
         makeDepth(folder, basecount)
 
 
+def nndepth(scanfolder, count, basecount):
+    for i in range(count):
+        print('progress:', str(i))
+        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/'+ str(i)+'/'
+        makeDepth(folder, basecount)
+
+
 def unw(scanfolder, count):
     for i in range(count):
         print('start')
