@@ -199,9 +199,9 @@ def makeclouds(scanfolder, count):
         print(folder)
         if path.exists(folder):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
@@ -211,8 +211,8 @@ def makeclouds(scanfolder, count):
 # # makeDDbase(199)
 
 unw('scans', 465)
-depth('scans', 465, 199)
-makeclouds('scans', 465)
+# depth('scans', 465, 199)
+# makeclouds('scans', 465)
 
 
 

@@ -68,7 +68,7 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
     rgb = Image.open(rgb_file)
     # depth = Image.open(depth_file)
     depth = Image.open(depth_file).convert('I')
-    # mask = Image.open(mask_file).convert('I')
+    mask = Image.open(mask_file).convert('I')
 
     # if rgb.size != depth.size:
     #     raise Exception("Color and depth image do not have the same resolution.")
@@ -86,7 +86,7 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
-            if True:#(mask.getpixel((u,v))<55):
+            if (mask.getpixel((u,v))<55):
                 Z = depth.getpixel((u, v))*.22 
                 if Z == 0: continue
                 Y = .22 * v
