@@ -93,7 +93,7 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
             phi_max = float(
                 max(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[3][i, j])))
             phi_min = float(
-                min(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[2][i, j])))
+                min(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[3][i, j])))
             phi_range = float(phi_max - phi_min)
             signal = float(phi_range / (phi_sum+.01))
             mask[i, j] = (signal < noise_threshold)
@@ -351,11 +351,11 @@ def testarctan(folder):
 #############################################################################################################################
 # process files
 
-for i in range(469):
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    if path.exists(folder):
-        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
+# for i in range(449):
+#     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+#     if path.exists(folder):
+#         take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+#         take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
 #############################################################################################################################
     # images = glob.glob(folder+'*/image1.png', recursive= True)

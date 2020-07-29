@@ -136,7 +136,7 @@ def makeDepth(folder, basecount):
         for j in range(rheight):
             s=0
             for s in range(basecount-1):
-                if (abs(unwrap[i,j]-DBase[i,j,s])<.15):
+                if (abs(unwrap[i,j]-DBase[i,j,s])<.15): #used -10 to offset scans449 to avoiod saturation
                     break
                 else:
                     s+=1
@@ -210,9 +210,9 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-unw('scans', 465)
-# depth('scans', 465, 199)
-# makeclouds('scans', 465)
+# unw('scans', 449)
+# depth('scans', 449, 199)
+# makeclouds('scans', 449)
 
 
 

@@ -13,6 +13,7 @@ def make_grayscale(img):
 
 def nn1folders(inpfolder, outfolder, count):
     for i in range(count):
+        print('1:', i)
         os.renames(inpfolder+'render'+str(i)+'/blendertexture.png', outfolder+'gray/'+str(i)+'.png')
         os.renames(inpfolder+'render'+str(i)+'/-1nom.png', outfolder+'nom/'+str(i)+'.png')
         os.renames(inpfolder+'render'+str(i)+'/-1nom.npy', outfolder+'nom/'+str(i)+'.npy')
@@ -26,6 +27,7 @@ def nn1folders(inpfolder, outfolder, count):
 
 def nn4folders(inpfolder, outfolder, count):
     for i in range(count):
+        print('4:', i)
         # os.renames(inpfolder+'render'+str(i)+'/blendertexture.png', outfolder+'gray/'+str(i)+'.png')
         os.renames(inpfolder+'render'+str(i)+'/5nom.png', outfolder+'nom/'+str(i)+'.png')
         os.renames(inpfolder+'render'+str(i)+'/5nom.npy', outfolder+'nom/'+str(i)+'.npy')
@@ -39,5 +41,5 @@ def nn4folders(inpfolder, outfolder, count):
 inpfolder = '/home/samir/Desktop/blender/pycode/'+'scans'+'/'
 outfolder1 = '/home/samir/Desktop/blender/pycode/'+'new1'+'/1/'
 outfolder4 = '/home/samir/Desktop/blender/pycode/'+'new1'+'/4/'
-nn1folders(inpfolder,outfolder1,465)
-nn4folders(inpfolder,outfolder4,465)
+nn1folders(inpfolder,outfolder1,449)
+nn4folders(inpfolder,outfolder4,449)
