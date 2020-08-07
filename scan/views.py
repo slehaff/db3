@@ -48,7 +48,11 @@ def unwrap2():
     
     return
 
-
+def get_http(request):
+    #Process incoming http live get
+    if request.method == 'GET':
+        print('got get!')
+    return('It Worked!!!')
 
 def scan(request):
     if request.method == 'POST':
