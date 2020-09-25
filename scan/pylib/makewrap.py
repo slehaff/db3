@@ -114,22 +114,22 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
     np.save(file_path, wrap, allow_pickle=False)
     file_path = folder + '/' + numpy_file[:-4] + '_mask.npy'
     np.save(file_path, mask, allow_pickle=False)
-    file_path = folder + '/' + numpy_file[:-4] + '_process.npy'
-    np.save(file_path, process, allow_pickle=False)
-    file_path = folder + '/' + numpy_file[:-4] + '_c_range.npy'
-    np.save(file_path, c_range, allow_pickle=False)
+    # file_path = folder + '/' + numpy_file[:-4] + '_process.npy'
+    # np.save(file_path, process, allow_pickle=False)
+    # file_path = folder + '/' + numpy_file[:-4] + '_c_range.npy'
+    # np.save(file_path, c_range, allow_pickle=False)
     png_file = folder + '/' + png_file
     cv2.imwrite(png_file, im_wrap)
     mask_file = folder + '/' + str(offset) + 'mask.png'
     cv2.imwrite(mask_file, mask*128)
-    nom_file = folder + '/' + str(offset) + 'nom.png'
-    cv2.imwrite(nom_file, nom)
-    nom_file = folder + '/' + str(offset) + 'nom.npy'
-    np.save(nom_file, nom, allow_pickle=False)
-    denom_file = folder + '/' + str(offset) + 'denom.png'
-    cv2.imwrite(denom_file, denom)
-    denom_file = folder + '/' + str(offset) + 'denom.npy'
-    np.save(denom_file, denom, allow_pickle=False)
+    # nom_file = folder + '/' + str(offset) + 'nom.png'
+    # cv2.imwrite(nom_file, nom)
+    # nom_file = folder + '/' + str(offset) + 'nom.npy'
+    # np.save(nom_file, nom, allow_pickle=False)
+    # denom_file = folder + '/' + str(offset) + 'denom.png'
+    # cv2.imwrite(denom_file, denom)
+    # denom_file = folder + '/' + str(offset) + 'denom.npy'
+    # np.save(denom_file, denom, allow_pickle=False)
     cv2.destroyAllWindows()
     print(c_range)
     print(mask)
@@ -351,11 +351,11 @@ def testarctan(folder):
 #############################################################################################################################
 # process files
 
-# for i in range(449):
-#     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-#     if path.exists(folder):
-#         take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-#         take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
+for i in range(449):
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    if path.exists(folder):
+        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
 #############################################################################################################################
     # images = glob.glob(folder+'*/image1.png', recursive= True)
