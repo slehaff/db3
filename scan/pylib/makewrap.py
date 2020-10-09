@@ -8,8 +8,8 @@ import os.path
 from os import path
 
 
-rwidth = 170
-rheight = 170
+rwidth = 160
+rheight = 160
 
 
 def sqdist(v1, v2):
@@ -351,7 +351,7 @@ def testarctan(folder):
 #############################################################################################################################
 # process files
 
-for i in range(449):
+for i in range(222):
     folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
     if path.exists(folder):
         take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)

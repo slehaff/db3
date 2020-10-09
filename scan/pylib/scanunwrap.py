@@ -5,21 +5,20 @@ import sys
 import os
 from PIL import Image
 from jsoncloud import generate_json_pointcloud, generate_pointcloud
-from makecloud import make3dpoints
 import math
 import os.path
 from os import path
 
 high_freq = 13
 low_freq = 1
-rwidth = 170
-rheight = 170
+rwidth = 160
+rheight = 160
 
 
-focalLength = 938.0
-centerX = 319.5
-centerY = 239.5
-scalingFactor = 5000
+# focalLength = 938.0
+# centerX = 319.5
+# centerY = 239.5
+# scalingFactor = 5000
 
 PI = np.pi
 
@@ -178,9 +177,9 @@ def unw(scanfolder, count):
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
         print(folder)
         if path.exists(folder):
-            ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
+            # ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
             unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
-            deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
+            # deduct_ref('scan_wrap2.npy', 'scan_wrap2.npy', folder, ref_folder)
             # threedpoints = make3dpoints(folder+'unwrap.npy', folder, ref_folder+'/unwrap.npy')
             # cv2.imwrite(folder + 'unwrap2.png', threedpoints)
             # generate_json_pointcloud(folder + 'blenderimage2.png', folder + 'unwrap.png', folder +'pointcl.json')
@@ -210,9 +209,9 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-# unw('scans', 449)
-# depth('scans', 449, 199)
-# makeclouds('scans', 449)
+unw('scans', 222)
+depth('scans', 222, 199)
+makeclouds('scans', 222)
 
 
 
