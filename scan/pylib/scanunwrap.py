@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 from PIL import Image
-from jsoncloud import generate_json_pointcloud, generate_pointcloud
+from scan.pylib.jsoncloud import generate_pointcloud
 import math
 import os.path
 from os import path
@@ -209,9 +209,9 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-unw('scans', 222)
-depth('scans', 222, 199)
-makeclouds('scans', 222)
+# unw('scans', 222)
+# depth('scans', 222, 199)
+# makeclouds('scans', 222)
 
 
 

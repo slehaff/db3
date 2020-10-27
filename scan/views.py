@@ -6,6 +6,7 @@ from .pylib.servers import messenger
 from .pylib.servers.picam import new_receiver_thread
 import os
 from scan.pylib.makewrap import *
+from scan.pylib.scanunwrap import *
 # from scan.pylib.unwrap import *
 # from scan.pylib.pointcloud import *
 from scan.pylib.jsoncloud import *

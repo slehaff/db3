@@ -273,8 +273,8 @@ def makemanystamps():
     makestamps(squares, periods, 9, 1,  folder)
     makestamps(squares, periods, 10, 5/3,  folder)
 
-def makemygama(h,w, folder):
-    file = folder + 'gamma.png'
+def makemygama(h,w):
+    file = "/home/samir/db3/prototype/pylib/4cosines/" + 'gamma.png'
     # gray = cv2.cvtColor(wholeima, cv2.COLOR_BGR2GRAY)
     wholeima = make_gamma(w,h)
     img2 = np.zeros([height,width,3])

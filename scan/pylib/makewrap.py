@@ -350,12 +350,12 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 #############################################################################################################################
 # process files
-
-for i in range(222):
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    if path.exists(folder):
-        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
+def execute():
+    for i in range(222):
+        folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+        if path.exists(folder):
+            take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+            take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
 #############################################################################################################################
     # images = glob.glob(folder+'*/image1.png', recursive= True)
