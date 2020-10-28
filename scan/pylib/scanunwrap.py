@@ -4,13 +4,13 @@ import argparse
 import sys
 import os
 from PIL import Image
-from scan.pylib.jsoncloud import generate_pointcloud
+# from pylib.jsoncloud import generate_pointcloud
 import math
 import os.path
 from os import path
 
 high_freq = 13
-low_freq = 1
+low_freq = 1.6
 rwidth = 160
 rheight = 160
 
@@ -214,8 +214,8 @@ def makeclouds(scanfolder, count):
 # makeclouds('scans', 222)
 
 
-
-
+folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
 
 
 

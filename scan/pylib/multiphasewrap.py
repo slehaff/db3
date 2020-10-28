@@ -8,8 +8,8 @@ import os.path
 from os import path
 
 
-rwidth = 170
-rheight = 170
+rwidth = 160
+rheight = 160
 N = 4
 
 def sqdist(v1, v2):
@@ -258,13 +258,15 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(100):
+for i in range(1):
 
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    if path.exists(folder):
-        take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
-        take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
-
+    # folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    # if path.exists(folder):
+    take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 3)
+        # take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
+        # take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
     # images = glob.glob(folder+'*/image1.png', recursive= True)
     # print('image count:',len(images))
