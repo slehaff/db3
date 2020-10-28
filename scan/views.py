@@ -14,6 +14,7 @@ from scan.pylib.jsoncloud import *
 import shutil
 import json
 from distutils.dir_util import copy_tree
+import os
 
 def scan_wrap(folder):
     print('scan_wrap started')
@@ -86,6 +87,9 @@ def scan(request):
 def take_scan():
     print('take scan')
     folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    n = len(os.listdir(folder))
+    folder = folder+'render'+ str(n+1)+'/'
+    os.mkdir(folder)
     t = new_receiver_thread('1', folder=folder)
     print('scan receiver started')
     print('start take')

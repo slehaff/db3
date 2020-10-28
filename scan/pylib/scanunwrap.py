@@ -10,7 +10,7 @@ import os.path
 from os import path
 
 high_freq = 13
-low_freq = 1.6
+low_freq = 1.3
 rwidth = 160
 rheight = 160
 
@@ -195,11 +195,12 @@ def makeclouds(scanfolder, count):
      for i in range(count):
         print('start')
         folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        folder = scanfolder +'/render'+ str(i)+'/'
         print(folder)
         if path.exists(folder):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
+            # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
             generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
@@ -209,13 +210,16 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-# unw('scans', 222)
-# depth('scans', 222, 199)
-# makeclouds('scans', 222)
-
-
 folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+
+
+unw('scans', 15)
+depth('scans', 15, 199)
+makeclouds('scans', 15)
+
+
+# folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+# unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
 
 
 
