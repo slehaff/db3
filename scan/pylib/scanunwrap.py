@@ -69,42 +69,6 @@ def unwrap_r(low_f_file, high_f_file, folder):
 
 
 
-
-def deduct_ref(unwrap, reference, folder1, folder2):
-    file1 = folder1 + '/' + unwrap
-    file2 = folder2 + '/' + reference
-    maskfile = folder1 + '/'+ 'scan_wrap1_process.npy' 
-    wrap_data = np.load(file1)  # To be continuedref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
-
-    ref_data = np.load(file2)
-    mask_data = np.load(maskfile)
-    ref_data = np.multiply(ref_data, mask_data)
-    net_data = np.subtract(wrap_data, ref_data)
-    print('abs_unwrap:', np.amax(net_data), np.amin(net_data))
-    # print('reference:', ref_data)
-    # print('wrap:',wrap_data)
-    # print('abs:',net_data)
-    net_save = folder1 + 'abs_unwrap.npy'
-    np.save(net_save, net_data, allow_pickle=False)
-    print(net_save)
-    # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
-    # net_data = np.multiply(net_data, 1.0)
-    cv2.imwrite(folder1 + 'abs_unwrap.png', 40*net_data)
-
-
-def unwrap(request):
-    # folder = ScanFolder.objects.last().folderName
-    folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
-    ref_folder = '/home/samir/db2/scan/static/scan_folder/scan_ref_folder'
-    three_folder = '/home/samir/db2/3D/static/3scan_folder'
-    unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
-    deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
-    # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
-    generate_json_pointcloud(folder + 'image1.png', folder +
-                             '/abs_unwrap.png', three_folder + '/pointcl.json')
-    return render(request, 'scantemplate.html')
-
-
 def makeDDbase(count):
     print('start')
     phibase = np.zeros((rheight, rwidth,count), dtype=np.float64)
@@ -235,6 +199,44 @@ makeclouds('scans', 15)
 
 
 #########################################################################################################################
+
+def deduct_ref(unwrap, reference, folder1, folder2):
+    file1 = folder1 + '/' + unwrap
+    file2 = folder2 + '/' + reference
+    maskfile = folder1 + '/'+ 'scan_wrap1_process.npy' 
+    wrap_data = np.load(file1)  # To be continuedref_folder = '/home/samir/db3/scan/static/scan_folder/scan_ref_folder'
+
+    ref_data = np.load(file2)
+    mask_data = np.load(maskfile)
+    ref_data = np.multiply(ref_data, mask_data)
+    net_data = np.subtract(wrap_data, ref_data)
+    print('abs_unwrap:', np.amax(net_data), np.amin(net_data))
+    # print('reference:', ref_data)
+    # print('wrap:',wrap_data)
+    # print('abs:',net_data)
+    net_save = folder1 + 'abs_unwrap.npy'
+    np.save(net_save, net_data, allow_pickle=False)
+    print(net_save)
+    # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
+    # net_data = np.multiply(net_data, 1.0)
+    cv2.imwrite(folder1 + 'abs_unwrap.png', 40*net_data)
+
+
+
+
+# def unwrap(request):
+#     # folder = ScanFolder.objects.last().folderName
+#     folder = '/home/samir/db2/scan/static/scan_folder/scan_im_folder/'
+#     ref_folder = '/home/samir/db2/scan/static/scan_folder/scan_ref_folder'
+#     three_folder = '/home/samir/db2/3D/static/3scan_folder'
+#     unwrap_r('scan_wrap2.npy', 'scan_wrap1.npy', folder )
+#     deduct_ref('unwrap.npy', 'unwrap.npy', folder, ref_folder)
+#     # generate_color_pointcloud(folder + 'image1.png', folder + '/abs_unwrap.png', folder + '/pointcl.ply')
+#     generate_json_pointcloud(folder + 'image1.png', folder +
+#                              '/abs_unwrap.png', three_folder + '/pointcl.json')
+#     return render(request, 'scantemplate.html')
+
+
 # def abs_unwrap_r(low_f, high_f, output_file,  folder):
 #     filelow = folder + '/' + low_f
 #     filehigh = folder + '/' + high_f
