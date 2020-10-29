@@ -258,10 +258,10 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(8,15):
+for i in range(0,32):
 
-    # folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/render'+ str(i)+'/'
+    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+    # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/render'+ str(i)+'/'
     # if path.exists(folder):
     take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
     take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 3)

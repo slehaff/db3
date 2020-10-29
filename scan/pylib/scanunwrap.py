@@ -4,13 +4,13 @@ import argparse
 import sys
 import os
 from PIL import Image
-# from pylib.jsoncloud import generate_pointcloud
+import jsoncloud
 import math
 import os.path
 from os import path
 
 high_freq = 13
-low_freq = 1.3
+low_freq = 1
 rwidth = 160
 rheight = 160
 
@@ -52,6 +52,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     # print("I'm in unwrap_r")
     print('kdata:', kdata[::40, ::40])
     wr_save = folder + 'unwrap.npy'
+    print(wr_save)
     np.save(wr_save, unwrapdata, allow_pickle=False)
     # print(wr_save)
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
@@ -120,25 +121,25 @@ def makeDepth(folder, basecount):
 
 
 
-def depth(scanfolder, count, basecount):
+def depth(myfolder, count, basecount):
     for i in range(count):
         print('progress:', str(i))
-        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        folder = myfolder+'/render'+ str(i)+'/'
         makeDepth(folder, basecount)
 
 
-def nndepth(scanfolder, count, basecount):
+def nndepth(myfolder, count, basecount):
     for i in range(count):
         print('progress:', str(i))
-        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/'+ str(i)+'/'
+        folder = myfolder+'/'+ str(i)+'/'
         makeDepth(folder, basecount)
 
 
-def unw(scanfolder, count):
+def unw(myfolder, count):
     for i in range(count):
         print('start')
 
-        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
+        folder = myfolder+'/render'+ str(i)+'/'
         print(folder)
         if path.exists(folder):
             # ref_folder ='/home/samir/Desktop/blender/pycode/reference/scan_ref_folder' 
@@ -155,17 +156,16 @@ def unw(scanfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
 
-def makeclouds(scanfolder, count):
+def makeclouds(myfolder, count):
      for i in range(count):
         print('start')
-        folder = '/home/samir/Desktop/blender/pycode/'+scanfolder+'/render'+ str(i)+'/'
-        folder = scanfolder +'/render'+ str(i)+'/'
+        folder = myfolder+'/render'+ str(i)+'/'
         print(folder)
         if path.exists(folder):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-            generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            jsoncloud.generate_pointcloud(folder + 'image8.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
@@ -174,12 +174,13 @@ def makeclouds(scanfolder, count):
 # # unw('scanplanes', 199)
 # # makeDDbase(199)
 
-folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+# folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+folder = '/home/samir/Desktop/blender/pycode/scans/'
 
 
-unw('scans', 15)
-depth('scans', 15, 199)
-makeclouds('scans', 15)
+unw(folder, 32)
+depth(folder, 32, 199)
+makeclouds(folder, 32)
 
 
 # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
