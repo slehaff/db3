@@ -10,7 +10,7 @@ from os import path
 
 rwidth = 160
 rheight = 160
-N = 4
+
 
 def sqdist(v1, v2):
     d = v1-v2
@@ -61,7 +61,193 @@ def avewrap(folder, file1, file2, average):
     return
 
 
+def take_wrap6(folder, numpy_file, png_file, preamble, offset):
+    N=6
+    mask = np.zeros((rheight, rwidth), dtype=np.bool)
+    process = np.zeros((rheight, rwidth), dtype=np.bool)
+    c_range = np.zeros((rheight, rwidth), dtype=np.float)
+    nom = np.zeros((rheight, rwidth), dtype=np.float)
+    denom = np.zeros((rheight, rwidth), dtype=np.float)
+    
+
+    noise_threshold = 0.1
+
+    image_cnt = 6  # Number of images to be taken
+    im0 = np.zeros((rwidth, rheight), dtype=np.float)
+    im1 = np.zeros((rwidth, rheight), dtype=np.float)
+    im2 = np.zeros((rwidth, rheight), dtype=np.float)
+    im3 = np.zeros((rwidth, rheight), dtype=np.float)
+    im4 = np.zeros((rwidth, rheight), dtype=np.float)
+    im5 = np.zeros((rwidth, rheight), dtype=np.float)
+
+
+    im_arr = [im0, im1, im2, im3, im4, im5]
+    for i in range(image_cnt):
+        my_file = folder + preamble + str(offset+i+1) + ".png"
+        print(my_file)
+        image = cv2.imread(my_file)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        im_arr[i] = gray
+        im_arr[i]= im_arr[i]*math.sin(2*np.pi*i/N)
+    nom = sum(im_arr)
+
+    im0 = np.zeros((rwidth, rheight), dtype=np.float)
+    im1 = np.zeros((rwidth, rheight), dtype=np.float)
+    im2 = np.zeros((rwidth, rheight), dtype=np.float)
+    im3 = np.zeros((rwidth, rheight), dtype=np.float)
+    im4 = np.zeros((rwidth, rheight), dtype=np.float)
+    im5 = np.zeros((rwidth, rheight), dtype=np.float)
+
+
+    im_arr = [im0, im1, im2, im3, im4, im5]
+
+    for i in range(image_cnt):
+        my_file = folder + preamble + str(offset+i+1) + ".png"
+        print(my_file)
+        image = cv2.imread(my_file)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        im_arr[i] = gray
+        im_arr[i]= im_arr[i]*math.cos(2*np.pi*i/N)
+    denom = sum(im_arr)
+
+    wrap = np.zeros((rheight, rwidth), dtype=np.float)
+    im_wrap = np.zeros((rheight, rwidth), dtype=np.float)
+    for i in range(rheight):
+        for j in range(rwidth):
+            # c_range[i, j] = phi_range
+            if True:#process[i, j]:
+                wrap[i, j] = np.arctan2(nom[i,j],denom[i,j])
+                if wrap[i, j] < 0:
+                    wrap[i, j] += 2*np.pi
+                im_wrap[i, j] = 128/np.pi * wrap[i, j]
+            else:
+                wrap[i, j] = 0
+                im_wrap[i, j] = 0
+    file_path = folder + '/' + numpy_file
+    np.save(file_path, wrap, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_mask.npy'
+    np.save(file_path, mask, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_process.npy'
+    np.save(file_path, process, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_c_range.npy'
+    np.save(file_path, c_range, allow_pickle=False)
+    nom_file = folder + '/' + str(offset) + 'nom.png'
+    cv2.imwrite(nom_file, nom)
+    nom_file = folder + '/' + str(offset) + 'nom.npy'
+    np.save(nom_file, nom, allow_pickle=False)
+    denom_file = folder + '/' + str(offset) + 'denom.png'
+    cv2.imwrite(denom_file, denom)
+    denom_file = folder + '/' + str(offset) + 'denom.npy'
+    np.save(denom_file, denom, allow_pickle=False)
+    png_file = folder + '/' + png_file
+    cv2.imwrite(png_file, im_wrap)
+    mask_file = folder + '/' + str(offset) + 'mask.png'
+    cv2.imwrite(mask_file, mask*128)
+    cv2.destroyAllWindows()
+    # print(c_range)
+    # print(mask)
+    # compute_quality()
+
+
+def take_wrap12(folder, numpy_file, png_file, preamble, offset):
+    N=12
+    mask = np.zeros((rheight, rwidth), dtype=np.bool)
+    process = np.zeros((rheight, rwidth), dtype=np.bool)
+    c_range = np.zeros((rheight, rwidth), dtype=np.float)
+    nom = np.zeros((rheight, rwidth), dtype=np.float)
+    denom = np.zeros((rheight, rwidth), dtype=np.float)
+    
+
+    noise_threshold = 0.1
+
+    image_cnt = 12  # Number of images to be taken
+    im0 = np.zeros((rwidth, rheight), dtype=np.float)
+    im1 = np.zeros((rwidth, rheight), dtype=np.float)
+    im2 = np.zeros((rwidth, rheight), dtype=np.float)
+    im3 = np.zeros((rwidth, rheight), dtype=np.float)
+    im4 = np.zeros((rwidth, rheight), dtype=np.float)
+    im5 = np.zeros((rwidth, rheight), dtype=np.float)
+    im6 = np.zeros((rwidth, rheight), dtype=np.float)
+    im7 = np.zeros((rwidth, rheight), dtype=np.float)
+    im8 = np.zeros((rwidth, rheight), dtype=np.float)
+    im9 = np.zeros((rwidth, rheight), dtype=np.float)
+    im10 = np.zeros((rwidth, rheight), dtype=np.float)
+    im11 = np.zeros((rwidth, rheight), dtype=np.float)
+
+    im_arr = [im0, im1, im2, im3, im4, im5, im6, im7, im8, im9, im10, im11]
+    for i in range(image_cnt):
+        my_file = folder + preamble + str(offset+i+1) + ".png"
+        print(my_file)
+        image = cv2.imread(my_file)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        im_arr[i] = gray
+        im_arr[i]= im_arr[i]*math.sin(2*np.pi*i/N)
+    nom = sum(im_arr)
+
+    im0 = np.zeros((rwidth, rheight), dtype=np.float)
+    im1 = np.zeros((rwidth, rheight), dtype=np.float)
+    im2 = np.zeros((rwidth, rheight), dtype=np.float)
+    im3 = np.zeros((rwidth, rheight), dtype=np.float)
+    im4 = np.zeros((rwidth, rheight), dtype=np.float)
+    im5 = np.zeros((rwidth, rheight), dtype=np.float)
+    im6 = np.zeros((rwidth, rheight), dtype=np.float)
+    im7 = np.zeros((rwidth, rheight), dtype=np.float)
+    im8 = np.zeros((rwidth, rheight), dtype=np.float)
+    im9 = np.zeros((rwidth, rheight), dtype=np.float)
+    im10 = np.zeros((rwidth, rheight), dtype=np.float)
+    im11 = np.zeros((rwidth, rheight), dtype=np.float)
+
+    im_arr = [im0, im1, im2, im3, im4, im5, im6, im7, im8, im9, im10, im11]
+
+    for i in range(image_cnt):
+        my_file = folder + preamble + str(offset+i+1) + ".png"
+        print(my_file)
+        image = cv2.imread(my_file)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        im_arr[i] = gray
+        im_arr[i]= im_arr[i]*math.cos(2*np.pi*i/N)
+    denom = sum(im_arr)
+
+    wrap = np.zeros((rheight, rwidth), dtype=np.float)
+    im_wrap = np.zeros((rheight, rwidth), dtype=np.float)
+    for i in range(rheight):
+        for j in range(rwidth):
+            # c_range[i, j] = phi_range
+            if True:#process[i, j]:
+                wrap[i, j] = np.arctan2(nom[i,j],denom[i,j])
+                if wrap[i, j] < 0:
+                    wrap[i, j] += 2*np.pi
+                im_wrap[i, j] = 128/np.pi * wrap[i, j]
+            else:
+                wrap[i, j] = 0
+                im_wrap[i, j] = 0
+    file_path = folder + '/' + numpy_file
+    np.save(file_path, wrap, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_mask.npy'
+    np.save(file_path, mask, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_process.npy'
+    np.save(file_path, process, allow_pickle=False)
+    file_path = folder + '/' + numpy_file[:-4] + '_c_range.npy'
+    np.save(file_path, c_range, allow_pickle=False)
+    nom_file = folder + '/' + str(offset) + 'nom.png'
+    cv2.imwrite(nom_file, nom)
+    nom_file = folder + '/' + str(offset) + 'nom.npy'
+    np.save(nom_file, nom, allow_pickle=False)
+    denom_file = folder + '/' + str(offset) + 'denom.png'
+    cv2.imwrite(denom_file, denom)
+    denom_file = folder + '/' + str(offset) + 'denom.npy'
+    np.save(denom_file, denom, allow_pickle=False)
+    png_file = folder + '/' + png_file
+    cv2.imwrite(png_file, im_wrap)
+    mask_file = folder + '/' + str(offset) + 'mask.png'
+    cv2.imwrite(mask_file, mask*128)
+    cv2.destroyAllWindows()
+    # print(c_range)
+    # print(mask)
+    # compute_quality()
+
 def take_wrap4(folder, numpy_file, png_file, preamble, offset):
+    N=4
     mask = np.zeros((rheight, rwidth), dtype=np.bool)
     process = np.zeros((rheight, rwidth), dtype=np.bool)
     c_range = np.zeros((rheight, rwidth), dtype=np.float)
@@ -155,6 +341,7 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
 
 
 def testwrap():
+    N=4
     image_cnt = 4  # Number of images to be taken
     im0 = np.zeros((rwidth, rheight), dtype=np.float)
     im1 = np.zeros((rwidth, rheight), dtype=np.float)
@@ -258,13 +445,15 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-for i in range(0,32):
+# folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
+myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+count=len(os.listdir(myfolder))
+for i in range(count):
+    folder = myfolder+'render'+ str(i)+'/'
 
-    folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-    # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/render'+ str(i)+'/'
     # if path.exists(folder):
-    take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
-    take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 3)
+    take_wrap12(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    take_wrap12(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 11)
         # take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
         # take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 

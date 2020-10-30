@@ -4,13 +4,13 @@ import argparse
 import sys
 import os
 from PIL import Image
-import jsoncloud
+# import scan.pylib.jsoncloud
 import math
 import os.path
 from os import path
 
-high_freq = 13
-low_freq = 1
+high_freq = 14
+low_freq = .7
 rwidth = 160
 rheight = 160
 
@@ -169,18 +169,22 @@ def makeclouds(myfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
+def myrun():
+    # print('scanumwrap')
+    # # unw('scanplanes', 199)
+    # # makeDDbase(199)
 
-# print('scanumwrap')
-# # unw('scanplanes', 199)
-# # makeDDbase(199)
+    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    # # folder = '/home/samir/Desktop/blender/pycode/scans/'
+    count=len(os.listdir(folder))
 
-# folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-folder = '/home/samir/Desktop/blender/pycode/scans/'
+    unw(folder, count)
+    # depth(folder, 32, 199)
+    # makeclouds(folder, 32)
+
+myrun()
 
 
-unw(folder, 32)
-depth(folder, 32, 199)
-makeclouds(folder, 32)
 
 
 # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'

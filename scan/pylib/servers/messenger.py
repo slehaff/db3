@@ -35,7 +35,7 @@ def proto_mess(inp):
 
 def scan_mess():
     print('NewIP, port:', IP, port)
-    message = b'scan'
+    message = b'12scan'
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(message, (IP, port))
 
