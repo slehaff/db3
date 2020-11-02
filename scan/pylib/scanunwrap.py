@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 from PIL import Image
-# import scan.pylib.jsoncloud
+from pyntcloud import PyntCloud
 import math
 import os.path
 from os import path
@@ -135,6 +135,61 @@ def nndepth(myfolder, count, basecount):
         makeDepth(folder, basecount)
 
 
+
+def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
+    """
+    Generate a colored point cloud in PLY format from a color and a depth image.
+    
+    Input:
+    rgb_file -- filename of color image
+    depth_file -- filename of depth image
+    ply_file -- filename of ply file
+    
+    """
+    rgb = Image.open(rgb_file)
+    # depth = Image.open(depth_file)
+    depth = Image.open(depth_file).convert('I')
+    mask = Image.open(mask_file).convert('I')
+
+    # if rgb.size != depth.size:
+    #     raise Exception("Color and depth image do not have the same resolution.")
+    # if rgb.mode != "RGB":
+    #     raise Exception("Color image is not in RGB format")
+    # if depth.mode != "I":
+    #     raise Exception("Depth image is not in intensity format")
+
+
+    points = []    
+    for v in range(rgb.size[1]):
+        for u in range(rgb.size[0]):
+            color =   rgb.getpixel((u,v))
+            # Z = depth.getpixel((u,v)) / scalingFactor
+            # if Z==0: continue
+            # X = (u - centerX) * Z / focalLength
+            # Y = (v - centerY) * Z / focalLength
+            if (mask.getpixel((u,v))<55):
+                Z = depth.getpixel((u, v))*.22 
+                if Z == 0: continue
+                Y = .22 * v
+                X = .22 * u
+                points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,color[0],color[1],color[2]))
+    file = open(ply_file,"w")
+    file.write('''ply
+format ascii 1.0
+element vertex %d
+property float x
+property float y
+property float z
+property uchar red
+property uchar green
+property uchar blue
+property uchar alpha
+end_header
+%s
+'''%(len(points),"".join(points)))
+    file.close()
+
+
 def unw(myfolder, count):
     for i in range(count):
         print('start')
@@ -165,7 +220,7 @@ def makeclouds(myfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-            jsoncloud.generate_pointcloud(folder + 'image8.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            generate_pointcloud(folder + 'image8.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
@@ -179,8 +234,8 @@ def myrun():
     count=len(os.listdir(folder))
 
     unw(folder, count)
-    # depth(folder, 32, 199)
-    # makeclouds(folder, 32)
+    depth(folder, count, 199)
+    makeclouds(folder, count)
 
 myrun()
 
