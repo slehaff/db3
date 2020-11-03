@@ -9,8 +9,8 @@ import math
 import os.path
 from os import path
 
-high_freq = 14
-low_freq = .7
+high_freq = 13 #14
+low_freq = 1#.7
 rwidth = 160
 rheight = 160
 
@@ -234,8 +234,8 @@ def myrun():
     count=len(os.listdir(folder))
 
     unw(folder, count)
-    depth(folder, count, 199)
-    makeclouds(folder, count)
+    # depth(folder, count, 199)
+    # makeclouds(folder, count)
 
 myrun()
 

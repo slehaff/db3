@@ -4,7 +4,7 @@ import struct
 
 IP = 'dantrain.local'
 # IP = '127.0.0.1'
-port = 5005
+port = 5025
 # port = 6789
 
 
@@ -35,7 +35,7 @@ def proto_mess(inp):
 
 def scan_mess():
     print('NewIP, port:', IP, port)
-    message = b'12scan'
+    message = b'6scan'
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.sendto(message, (IP, port))
 
