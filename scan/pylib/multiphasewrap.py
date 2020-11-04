@@ -60,6 +60,29 @@ def avewrap(folder, file1, file2, average):
     np.save(folder+average, c, allow_pickle=False)
     return
 
+def distortion(folder):
+    A = np.ones((rwidth, rheight))
+    B = np.zeros((rwidth, rheight))
+    im = np.zeros((rwidth,rheight))
+    file = folder+'/image12.png'
+    im = cv2.imread(file)
+    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    B = (A-gray/255)*255
+    cv2.imwrite(folder+'/distort.png', B )
+
+
+
+def adjustLight(folder,myfile):
+    A = np.ones((rwidth, rheight))
+    B = np.zeros((rwidth, rheight))
+    im = np.zeros((rwidth,rheight))
+    im = cv2.imread(myfile)
+    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    B = cv2.imread(folder+'/distort.png')
+    B = cv2.cvtColor(B, cv2.COLOR_BGR2GRAY)
+    result = np.multiply((B/255), gray)
+    cv2.imwrite(myfile, result)
+
 
 def take_wrap6(folder, numpy_file, png_file, preamble, offset):
     N=6
@@ -84,6 +107,7 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
     im_arr = [im0, im1, im2, im3, im4, im5]
     for i in range(image_cnt):
         my_file = folder + preamble + str(offset+i+1) + ".png"
+        adjustLight(folder, my_file)
         print(my_file)
         image = cv2.imread(my_file)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -103,6 +127,7 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
 
     for i in range(image_cnt):
         my_file = folder + preamble + str(offset+i+1) + ".png"
+        adjustLight(folder, my_file)
         print(my_file)
         image = cv2.imread(my_file)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -296,11 +321,7 @@ def take_wrap4(folder, numpy_file, png_file, preamble, offset):
             # phi_sum = float(int(im_arr[0][i, j]) + int(im_arr[1]
             #                                            [i, j]) + int(im_arr[2][i, j] + int(im_arr[3][i, j])))
             # phi_max = float(
-            #     max(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[3][i, j])))
-            # phi_min = float(
-            #     min(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, j], int(im_arr[2][i, j])))
-            # phi_range = float(phi_max - phi_min)
-            # signal = float(phi_range / (phi_sum+.01))
+            #     max(im_arr[0][i, j], im_arr[1][i, j], im_arr[2][i, jrettet aktion
             # mask[i, j] = (signal < noise_threshold)
             # process[i, j] = not(mask[i, j])
             # c_range[i, j] = phi_range
@@ -452,8 +473,9 @@ for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'
 
     # if path.exists(folder):
-    take_wrap12(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
-    take_wrap12(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 11)
+    distortion(folder)
+    take_wrap6(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    take_wrap6(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 5)
         # take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
         # take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 

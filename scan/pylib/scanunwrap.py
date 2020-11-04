@@ -237,7 +237,7 @@ def myrun():
     # depth(folder, count, 199)
     # makeclouds(folder, count)
 
-myrun()
+# myrun()
 
 
 

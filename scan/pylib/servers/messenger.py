@@ -4,7 +4,7 @@ import struct
 
 IP = 'dantrain.local'
 # IP = '127.0.0.1'
-port = 5025
+port = 5005
 # port = 6789
 
 
