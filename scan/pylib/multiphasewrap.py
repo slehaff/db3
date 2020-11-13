@@ -466,16 +466,16 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-# folder = '/home/samir/Desktop/blender/pycode/scans/render'+ str(i)+'/'
-myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+myfolder = '/home/samir/Desktop/blender/pycode/160spheres/'
+# myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'
 
     # if path.exists(folder):
-    distortion(folder)
-    take_wrap6(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
-    take_wrap6(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 5)
+    # distortion(folder)
+    take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
+    take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 3)
         # take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
         # take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 
