@@ -3,6 +3,9 @@
 import open3d as o3d
 import numpy as np
 import copy
+import shutil
+import os
+
 
 
 def draw_registration_result(source, target, transformation):
@@ -33,8 +36,10 @@ def preprocess_point_cloud(pcd, voxel_size):
 
 def prepare_dataset(voxel_size):
     print(":: Load two point clouds and disturb initial pose.")
-    source = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans89/render0/pointcl-depth.ply')
-    target = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/scans89/render3/pointcl-depth.ply')
+    # source = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/headscans/render0/pointcl-depth.ply')
+    # target = o3d.io.read_point_cloud('/home/samir/Desktop/blender/pycode/headscans/render1/pointcl-depth.ply')
+    source = o3d.io.read_point_cloud("/home/samir/Open3D-master/examples/test_data/ICP/cloud_bin_0.pcd")
+    target = o3d.io.read_point_cloud("/home/samir/Open3D-master/examples/test_data/ICP/cloud_bin_1.pcd")
     trans_init = np.asarray([[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0],
                              [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]])
     source.transform(trans_init)
@@ -73,7 +78,7 @@ def refine_registration(source, target, source_fpfh, target_fpfh, voxel_size):
     return result
 
 
-if __name__ == "__main__":
+def run():
     voxel_size = 0.001  # means 5cm for the dataset
     source, target, source_down, target_down, source_fpfh, target_fpfh = \
             prepare_dataset(voxel_size)
@@ -89,3 +94,19 @@ if __name__ == "__main__":
                                      voxel_size)
     print(result_icp)
     draw_registration_result(source, target, result_icp.transformation)
+
+
+def getplys(infolder):       
+    count=len(os.listdir(infolder))
+    for i in range(count-1):
+        print(count)
+        shutil.copyfile(infolder+'render'+str(i)+'/pointcl-depth.ply', infolder +'/plyfolder/points'+str(i)+'.ply')
+        
+
+
+
+
+
+
+folder = '/home/samir/Desktop/blender/pycode/160spheres/'
+getplys(folder)

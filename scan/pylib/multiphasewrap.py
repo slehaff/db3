@@ -139,8 +139,21 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
     im_wrap = np.zeros((rheight, rwidth), dtype=np.float)
     for i in range(rheight):
         for j in range(rwidth):
-            # c_range[i, j] = phi_range
-            if True:#process[i, j]:
+            phi_sum = float(
+                int(im[0][i, j]) + int(im[1][i, j]) + int(im[2][i, j])+ int(im[3][i, j])+ int(im[4][i, j])+ int(im[5][i, j]))
+            phi_max = float(
+                max(im[0][i, j]),im[1][i, j]),im[2][i, j]),im[3][i, j]),im[4][i, j]),im[5][i, j]))
+            phi_min = float(
+                min(im[0][i, j]),im[1][i, j]),im[2][i, j]),im[3][i, j]),im[4][i, j]),im[5][i, j]))
+            phi_range = float(phi_max - phi_min)
+            if phi_sum == 0:
+                phi_sum = .01
+            noise = float(phi_range / phi_sum)
+            mask[i, j] = (noise < noise_threshold)
+            process[i, j] = not(mask[i, j])
+            c_range[i, j] = phi_range
+            c_range[i, j] = phi_range
+            if process[i, j]:
                 wrap[i, j] = np.arctan2(nom[i,j],denom[i,j])
                 if wrap[i, j] < 0:
                     wrap[i, j] += 2*np.pi
@@ -466,8 +479,8 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-myfolder = '/home/samir/Desktop/blender/pycode/160spheres/'
-# myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+# myfolder = '/home/samir/Desktop/blender/pycode/160spheres/'
+myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'

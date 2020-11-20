@@ -135,9 +135,9 @@ def newDepth(folder, basecount):
                     s+=10
 
             # print(i,j,unwrap[i,j],DBase[i,j,s])
-            depth[i,j]=s
+            depth[i,j]=s # /300*-.0375 + .06*1000
             # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
-            print(s)
+            # print(s)
     # print('depth:', np.amax(depth), np.amin(depth))
     im_depth = depth# np.max(unwrapdata)*255)
     cv2.imwrite(folder + 'depth.png', im_depth)
@@ -222,10 +222,12 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
             if (mask.getpixel((u,v))<55):
-                Z = depth.getpixel((u, v))*.22 
+                Z = depth.getpixel((u, v))*.196
                 if Z == 0: continue
-                Y = .22 * v
-                X = .22 * u
+                Y = .196 * (v-80) *  Z/80 #.196 = tan(FOV/2)
+                X = .196 * (u-80) *  Z/80
+                if (u==80 and v ==80):
+                    print('z=', Z, X, Y)
                 points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,color[0],color[1],color[2]))
     file = open(ply_file,"w")
     file.write('''ply
@@ -271,6 +273,7 @@ def makeclouds(myfolder, count):
         folder = myfolder+'/render'+ str(i)+'/'
         print(folder)
         if path.exists(folder):
+            print('i=', i)
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
@@ -286,15 +289,15 @@ def mydepth():
 # mydepth()
 
 def myrun():
-    # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/160spheres/'
+    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    # folder = '/home/samir/Desktop/blender/pycode/160spheres/'
     count=len(os.listdir(folder))
 
     unw(folder, count)
     depth(folder, count, 300)
     makeclouds(folder, count)
 
-# myrun()
+myrun()
 
 
 
