@@ -140,11 +140,11 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
     for i in range(rheight):
         for j in range(rwidth):
             phi_sum = float(
-                int(im[0][i, j]) + int(im[1][i, j]) + int(im[2][i, j])+ int(im[3][i, j])+ int(im[4][i, j])+ int(im[5][i, j]))
+                int(im_arr[0][i, j]) + int(im_arr[1][i, j]) + int(im_arr[2][i, j])+ int(im_arr[3][i, j])+ int(im_arr[4][i, j])+ int(im_arr[5][i, j]))
             phi_max = float(
-                max(im[0][i, j]),im[1][i, j]),im[2][i, j]),im[3][i, j]),im[4][i, j]),im[5][i, j]))
+                max(im_arr[0][i, j],im_arr[1][i, j],im_arr[2][i, j],im_arr[3][i, j],im_arr[4][i, j],im_arr[5][i, j]))
             phi_min = float(
-                min(im[0][i, j]),im[1][i, j]),im[2][i, j]),im[3][i, j]),im[4][i, j]),im[5][i, j]))
+                min(im_arr[0][i, j],im_arr[1][i, j],im_arr[2][i, j],im_arr[3][i, j],im_arr[4][i, j],im_arr[5][i, j]))
             phi_range = float(phi_max - phi_min)
             if phi_sum == 0:
                 phi_sum = .01
@@ -434,6 +434,37 @@ def nn_wrap(nom, denom):
     im_wrap = cv2.GaussianBlur(im_wrap, (3, 3), 0)
     return(im_wrap)
 
+def make_grayscale(img):
+    # Transform color image to grayscale
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    return gray_img
+
+
+
+
+
+def mask(folder):
+    color = folder + 'image8.png'
+    print('color:', color)
+    img1 = np.zeros((rheight, rwidth), dtype=np.float)
+    img1 = cv2.imread(color, 1).astype(np.float32)
+    gray = make_grayscale(img1)
+
+
+    black = folder + 'image9.png'
+    img2 = np.zeros((rheight, rwidth), dtype=np.float)
+    img2 = cv2.imread(black, 0).astype(np.float32)
+    diff1 = np.subtract(gray, .5*img2)
+    mask =  np.zeros((rheight, rwidth), dtype=np.float)
+    for i in range(rheight):
+        for j in range(rwidth):
+            if (diff1[i,j]<50):
+                mask[i,j]= True
+    np.save( folder+ 'mask.npy', mask, allow_pickle=False)
+    cv2.imwrite( folder+ 'mask.png', 128*mask)
+    return(mask)
+
+
 
 
 
@@ -479,8 +510,8 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-# myfolder = '/home/samir/Desktop/blender/pycode/160spheres/'
-myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+myfolder = '/home/samir/Desktop/blender/pycode/cubescans/'
+# myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'
@@ -489,6 +520,7 @@ for i in range(count):
     # distortion(folder)
     take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'image', -1)
     take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'image', 3)
+    mask(folder)
         # take_wrap4(folder, 'scan_wrap1.npy', 'im_wrap1.png', 'blenderimage', -1)
         # take_wrap4(folder, 'scan_wrap2.npy', 'im_wrap2.png', 'blenderimage', 5)
 

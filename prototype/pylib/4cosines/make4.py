@@ -19,7 +19,7 @@ import pygame
 width = 170
 height = 170
 periods = 2
-hf_periods = 26
+hf_periods = 39
 stampwidth = 145
 stampheight = 145
 stampborder = 7

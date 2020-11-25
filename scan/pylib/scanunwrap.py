@@ -9,8 +9,8 @@ import math
 import os.path
 from os import path
 
-high_freq = 13 #14
-low_freq = 1#.7
+high_freq = 14 #14
+low_freq = .7#.7
 rwidth = 160
 rheight = 160
 
@@ -78,18 +78,18 @@ def makeDDbase(count):
             print('u=', u, 'v=', v)
             for i in range(count):
                 # print('i=',i)
-                folder = '/home/samir/Desktop/blender/pycode/160scanplanes/render'+ str(i)+'/'
+                folder = '/home/samir/Desktop/blender/pycode/300numplanes/render'+ str(i)+'/'
                 unwrap = np.zeros((rheight, rwidth), dtype=np.float64)
                 unwrap = np.load(folder+'unwrap.npy')   
                 phibase[u,v,i] = unwrap[u,v]
-    folder = '/home/samir/Desktop/blender/pycode/160scanplanes/'
+    folder = '/home/samir/Desktop/blender/pycode/300numplanes/'
     wr_save = folder + 'DDbase.npy'
     np.save(wr_save, phibase, allow_pickle=False)
 
 
 
 def makeDepth(folder, basecount):
-    basefile = '/home/samir/Desktop/blender/pycode/160scanplanes/DDbase.npy'
+    basefile = '/home/samir/Desktop/blender/pycode/300numplanes/DDbase.npy'
     DBase = np.load(basefile)
     unwrap = np.load(folder+'unwrap.npy' )
     # print('DBase:', np.amax(DBase), np.amin(DBase))
@@ -106,7 +106,7 @@ def makeDepth(folder, basecount):
                     s+=1
 
             # print(i,j,unwrap[i,j],DBase[i,j,s])
-            depth[i,j]=s
+            depth[i,j]=(s/300*-37.5 + 60)
             # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
     
     # print('depth:', np.amax(depth), np.amin(depth))
@@ -122,6 +122,7 @@ def newDepth(folder, basecount):
     # print('DBase:', np.amax(DBase), np.amin(DBase))
     # print('unwrap:', np.amax(unwrap), np.amin(unwrap))
     depth = np.zeros((rheight, rwidth), dtype=np.float64)
+    zee=0
     for i in range(rwidth):
         # print('i:', i)
         for j in range(rheight):
@@ -129,18 +130,29 @@ def newDepth(folder, basecount):
             for s in range(0, basecount-1,10):
                 if (unwrap[i,j]< DBase[i,j,s]):
                     ds = (unwrap[i,j] - DBase[i,j,s])/( DBase[i,j,s]- DBase[i,j,s-10])
-                    s = s+ds*10
+                    zee = s+ds*10
+                    # if(i==80 and j==80 ):
+                    #     print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
+                    # else:
+                    #     if(i==82 and j==82 ):
+                    #         print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
                     break
                 else:
-                    s+=10
+                    s+=1
+                    if s==299:
+                        print('not found!')
 
             # print(i,j,unwrap[i,j],DBase[i,j,s])
-            depth[i,j]=s # /300*-.0375 + .06*1000
+            if zee == 0:
+                print('not found')
+            depth[i,j]= (zee/299*-37.5 + 60)*1
             # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
             # print(s)
     # print('depth:', np.amax(depth), np.amin(depth))
     im_depth = depth# np.max(unwrapdata)*255)
     cv2.imwrite(folder + 'depth.png', im_depth)
+    np.save(folder+'depth.npy' ,im_depth , allow_pickle=False)
+
 
 
 
@@ -202,11 +214,12 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
     """
     rgb = Image.open(rgb_file)
     # depth = Image.open(depth_file)
-    depth = Image.open(depth_file).convert('I')
+    # depth = Image.open(depth_file).convert('I')
+    depth = np.load(depth_file )
     mask = Image.open(mask_file).convert('I')
 
     # if rgb.size != depth.size:
-    #     raise Exception("Color and depth image do not have the same resolution.")
+    #     raise Exception("Color and depth image do not have  same resolution.")
     # if rgb.mode != "RGB":
     #     raise Exception("Color image is not in RGB format")
     # if depth.mode != "I":
@@ -222,12 +235,21 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
             if (mask.getpixel((u,v))<55):
-                Z = depth.getpixel((u, v))*.196
+                # Z = depth.getpixel((u, v))
+                Z = depth[u,v]
+                if Z < 0:
+                    Z = 0 
+                else:
+                    if Z> 60:
+                        Z = 60
                 if Z == 0: continue
                 Y = .196 * (v-80) *  Z/80 #.196 = tan(FOV/2)
                 X = .196 * (u-80) *  Z/80
                 if (u==80 and v ==80):
-                    print('z=', Z, X, Y)
+                    print('80:z=', Z, X, Y)
+                else:
+                   if (u==102 and v ==82):
+                        print('82:z=', Z, X, Y) 
                 points.append("%f %f %f %d %d %d 0\n"%(X,Y,Z,color[0],color[1],color[2]))
     file = open(ply_file,"w")
     file.write('''ply
@@ -277,21 +299,21 @@ def makeclouds(myfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png' , folder + 'im_wrap1.png', folder +'pointcl-high.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png' , folder + 'im_wrap2.png', folder +'pointcl-low.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '-1mask.png', folder + 'unwrap.png', folder +'pointcl-unw.ply')
-            generate_pointcloud(folder + 'image8.png', folder + '-1mask.png', folder + 'depth.png', folder +'pointcl-depth.ply')
+            generate_pointcloud(folder + 'image8.png', folder + 'mask.png', folder + 'depth.npy', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
    
 def mydepth():
-    folder = '/home/samir/Desktop/blender/pycode/160scanplanes/'
-    unw(folder, 300)
+    folder = '/home/samir/Desktop/blender/pycode/300numplanes/'
+    unw(folder,300)
     makeDDbase(300)
 
 # mydepth()
 
 def myrun():
-    folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    # folder = '/home/samir/Desktop/blender/pycode/160spheres/'
-    count=len(os.listdir(folder))
+    # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
+    folder = '/home/samir/Desktop/blender/pycode/cubescans/'
+    count=len(os.listdir(folder))-1
 
     unw(folder, count)
     depth(folder, count, 300)
