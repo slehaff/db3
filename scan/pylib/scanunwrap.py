@@ -234,7 +234,7 @@ def generate_pointcloud(rgb_file, mask_file,depth_file,ply_file):
             # if Z==0: continue
             # X = (u - centerX) * Z / focalLength
             # Y = (v - centerY) * Z / focalLength
-            if (mask.getpixel((u,v))<55):
+            if (mask.getpixel((v,u))<55):
                 # Z = depth.getpixel((u, v))
                 Z = depth[u,v]
                 if Z < 0:
@@ -312,7 +312,7 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/headscans/'
+    folder = '/home/samir/Desktop/blender/pycode/headscans'
     count=len(os.listdir(folder))-1
 
     unw(folder, count)
