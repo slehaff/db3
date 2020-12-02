@@ -510,9 +510,9 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-myfolder = '/home/samir/Desktop/blender/pycode/cubescans/'
+myfolder = '/home/samir/Desktop/blender/pycode/headscans/'
 # myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-count=len(os.listdir(myfolder))
+count=len(os.listdir(myfolder))-1
 for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'
 
