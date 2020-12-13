@@ -512,7 +512,7 @@ def testarctan(folder):
 
 myfolder = '/home/samir/Desktop/blender/pycode/headscans/'
 # myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-count=len(os.listdir(myfolder))-1
+count=len(os.listdir(myfolder))
 for i in range(count):
     folder = myfolder+'render'+ str(i)+'/'
 
