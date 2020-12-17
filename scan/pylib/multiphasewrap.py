@@ -107,7 +107,7 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
     im_arr = [im0, im1, im2, im3, im4, im5]
     for i in range(image_cnt):
         my_file = folder + preamble + str(offset+i+1) + ".png"
-        adjustLight(folder, my_file)
+        # adjustLight(folder, my_file)
         print(my_file)
         image = cv2.imread(my_file)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -127,7 +127,7 @@ def take_wrap6(folder, numpy_file, png_file, preamble, offset):
 
     for i in range(image_cnt):
         my_file = folder + preamble + str(offset+i+1) + ".png"
-        adjustLight(folder, my_file)
+        # adjustLight(folder, my_file)
         print(my_file)
         image = cv2.imread(my_file)
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -510,7 +510,7 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-myfolder = '/home/samir/Desktop/blender/pycode/headscans/'
+myfolder = '/home/samir/Desktop/blender/pycode/scans5/'
 # myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):

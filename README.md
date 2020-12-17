@@ -3,7 +3,7 @@ on rpi3 jig:
 ssh pi@dantrain.local
 cd Desktop
 export DISPLAY:=0
-pkill python
+pkill -9 python
 python messreceive.py
 
 
