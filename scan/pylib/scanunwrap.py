@@ -4,7 +4,7 @@ import argparse
 import sys
 import os
 from PIL import Image
-from pyntcloud import PyntCloud
+# from pyntcloud import PyntCloud
 import math
 import os.path
 from os import path
@@ -312,12 +312,12 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/scans5'
+    folder = '/home/samir/Desktop/blender/pycode/metal5'
     count=2 #  len(os.listdir(folder))-1
 
     unw(folder, count)
-    # depth(folder, count, 400)
-    # makeclouds(folder, count)
+    depth(folder, count, 400)
+    makeclouds(folder, count)
 
 myrun()
 

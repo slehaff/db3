@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import time
-import pyntcloud
+# import pyntcloud
 import math
 import os.path
 from os import path
@@ -510,7 +510,7 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-myfolder = '/home/samir/Desktop/blender/pycode/scans5/'
+myfolder = '/home/samir/Desktop/blender/pycode/metal5/'
 # myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):
