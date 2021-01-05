@@ -8,6 +8,7 @@ from PIL import Image
 import math
 import os.path
 from os import path
+import shutil
 
 high_freq = 14 #14
 low_freq = .7#.7
@@ -302,7 +303,20 @@ def makeclouds(myfolder, count):
             generate_pointcloud(folder + 'image8.png', folder + 'mask.png', folder + 'depth.npy', folder +'pointcl-depth.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
-   
+
+def getplys(infolder):       
+    count=len(os.listdir(infolder))
+    for i in range(count-2):
+        print(count)
+        shutil.copyfile(infolder+'/render'+str(i)+'/pointcl-depth.ply', infolder +'/plyfolder/points'+str(i)+'.ply')
+        shutil.copyfile(infolder+'/render'+str(i)+'/image8.png', infolder +'/imgfolder/image'+str(i)+'.png')
+        
+
+
+
+
+
+
 def mydepth():
     folder = '/home/samir/Desktop/blender/pycode/400newplanes/'
     unw(folder,400)
@@ -312,12 +326,13 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/scans5'
+    folder = '/home/samir/Desktop/blender/pycode/stitch'
     count=  len(os.listdir(folder))
 
-    unw(folder, count)
-    depth(folder, count, 400)
-    makeclouds(folder, count)
+    # unw(folder, count)
+    # depth(folder, count, 400)
+    # makeclouds(folder, count)
+    getplys(folder)
 
 myrun()
 
