@@ -329,10 +329,10 @@ def myrun():
     folder = '/home/samir/Desktop/blender/pycode/stitch'
     count=  len(os.listdir(folder))
 
-    # unw(folder, count)
-    # depth(folder, count, 400)
-    # makeclouds(folder, count)
-    getplys(folder)
+    unw(folder, count)
+    depth(folder, count, 400)
+    makeclouds(folder, count)
+    # getplys(folder)
 
 myrun()
 
