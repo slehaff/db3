@@ -124,6 +124,7 @@ def newDepth(folder, basecount):
     basefile = '/home/samir/Desktop/blender/pycode/400newplanes/DDbase.npy'
     DBase = np.load(basefile)
     unwrap = np.load(folder+'unwrap.npy' )
+    mask = np.load(folder+'mask.npy' )
     # print('DBase:', np.amax(DBase), np.amin(DBase))
     # print('unwrap:', np.amax(unwrap), np.amin(unwrap))
     depth = np.zeros((rheight, rwidth), dtype=np.float64)
@@ -131,28 +132,29 @@ def newDepth(folder, basecount):
     for i in range(rwidth):
         # print('i:', i)
         for j in range(rheight):
-            s=0
-            for s in range(0, basecount-1,10):
-                if (unwrap[i,j]< DBase[i,j,s]):
-                    ds = (unwrap[i,j] - DBase[i,j,s])/( DBase[i,j,s]- DBase[i,j,s-10])
-                    zee = s+ds*10
-                    # if(i==80 and j==80 ):
-                    #     print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
-                    # else:
-                    #     if(i==82 and j==82 ):
-                    #         print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
-                    break
-                else:
-                    s+=1
-                    if s==400:
-                        print('not found!')
+            if not(mask[i,j]):
 
-            # print(i,j,unwrap[i,j],DBase[i,j,s])
-            if zee == 0:
-                print('not found')
-            depth[i,j]= (zee/400*-40 + 55)*1
-            # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
-            # print(s)
+                s=0
+                for s in range(0, basecount-1,10):
+                    if (unwrap[i,j]< DBase[i,j,s]):
+                        ds = (unwrap[i,j] - DBase[i,j,s])/( DBase[i,j,s]- DBase[i,j,s-10])
+                        zee = s+ds*10
+                        # if(i==80 and j==80 ):
+                        #     print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
+                        # else:
+                        #     if(i==82 and j==82 ):
+                        #         print('z=', zee,'depth=', (zee/400*-40 + 60)*1,'s=', s,'ds=', ds)
+                        break
+                    else:
+                        s+=1
+                        if s==400:
+                            print('not found!')
+
+                # print(i,j,unwrap[i,j],DBase[i,j,s])
+                if zee == 0:
+                    print('not found')
+                depth[i,j]= (zee/400*-40 + 55)*1
+
     # print('depth:', np.amax(depth), np.amin(depth))
     print('nndepthrange=', np.ptp(depth), np.max(depth), np.min(depth) )
 
@@ -332,7 +334,7 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/stitch2'
+    folder = '/home/samir/Desktop/blender/pycode/stitch3'
     count=  len(os.listdir(folder))
 
     unw(folder, count)
