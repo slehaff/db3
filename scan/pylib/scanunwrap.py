@@ -11,7 +11,7 @@ from os import path
 import shutil
 
 high_freq = 14 #14
-low_freq = .7#.7
+low_freq = .7
 rwidth = 160
 rheight = 160
 
@@ -55,6 +55,9 @@ def unwrap_r(low_f_file, high_f_file, folder):
     wr_save = folder + 'unwrap.npy'
     print(wr_save)
     np.save(wr_save, unwrapdata, allow_pickle=False)
+    k_save = folder + 'kdata.npy'
+    print(k_save)
+    np.save(k_save, kdata, allow_pickle=False)
     # print(wr_save)
     # np.save('wrap24.pickle', wrap24data, allow_pickle=True)
     # unwrapdata = np.multiply(unwrapdata, 1.0)
@@ -64,7 +67,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     maxval = np.amax(unwrapdata)
     print('maxval:', maxval)
     # im_unwrap = 255*unwrapdata/ maxval# np.max(unwrapdata)*255)
-    im_unwrap = 3*unwrapdata# np.max(unwrapdata)*255)
+    im_unwrap = 3.0*unwrapdata# np.max(unwrapdata)*255)
     # unwrapdata/np.max(unwrapdata)*255
     cv2.imwrite(folder + 'unwrap.png', im_unwrap)
     cv2.imwrite(folder + 'kdata.png', np.multiply(2*PI,kdata))
@@ -304,12 +307,12 @@ def makeclouds(myfolder, count):
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'kdata.png', folder +'pointcl-k.ply')
             # generate_pointcloud(folder + 'blendertexture.png', folder + '5mask.png', folder + 'unwrap2.png', folder +'pointcl-2.ply')
 
-def getplys(infolder):       
+def getplys(infolder ):       
     count=len(os.listdir(infolder))
-    for i in range(count-2):
+    for i in range(count):
         print(count)
-        shutil.copyfile(infolder+'/render'+str(i)+'/pointcl-depth.ply', infolder +'/plyfolder/points'+str(i)+'.ply')
-        shutil.copyfile(infolder+'/render'+str(i)+'/image8.png', infolder +'/imgfolder/image'+str(i)+'.png')
+        shutil.copyfile(infolder+'/render'+str(i)+'/pointcl-depth.ply', infolder +'files/plyfolder/points'+str(i)+'.ply')
+        shutil.copyfile(infolder+'/render'+str(i)+'/image8.png', infolder +'files/imgfolder/image'+str(i)+'.png')
         
 
 
@@ -326,12 +329,13 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/stitch'
+    folder = '/home/samir/Desktop/blender/pycode/stitch2'
     count=  len(os.listdir(folder))
 
     unw(folder, count)
     depth(folder, count, 400)
     makeclouds(folder, count)
+    
     # getplys(folder)
 
 myrun()

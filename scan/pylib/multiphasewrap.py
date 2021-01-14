@@ -458,7 +458,7 @@ def mask(folder):
     mask =  np.zeros((rheight, rwidth), dtype=np.float)
     for i in range(rheight):
         for j in range(rwidth):
-            if (diff1[i,j]<50):
+            if (diff1[i,j]<40):
                 mask[i,j]= True
     np.save( folder+ 'mask.npy', mask, allow_pickle=False)
     cv2.imwrite( folder+ 'mask.png', 128*mask)
@@ -510,7 +510,7 @@ def testarctan(folder):
 # cv2.imwrite(folder + 'diff.png', image3)
 # cv2.imwrite(folder + 'maskimg.png', maskimg)
 
-myfolder = '/home/samir/Desktop/blender/pycode/stitch/'
+myfolder = '/home/samir/Desktop/blender/pycode/headscans/'
 # myfolder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
 count=len(os.listdir(myfolder))
 for i in range(count):
