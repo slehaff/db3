@@ -55,6 +55,7 @@ def unwrap_r(low_f_file, high_f_file, folder):
     wr_save = folder + 'unwrap.npy'
     print(wr_save)
     np.save(wr_save, unwrapdata, allow_pickle=False)
+    print('unwrange=', np.ptp(unwrapdata), np.max(unwrapdata), np.min(unwrapdata) )
     k_save = folder + 'kdata.npy'
     print(k_save)
     np.save(k_save, kdata, allow_pickle=False)
@@ -153,6 +154,8 @@ def newDepth(folder, basecount):
             # print('found:',i,j, unwrap[i,j], DBase[i,j,s],s)
             # print(s)
     # print('depth:', np.amax(depth), np.amin(depth))
+    print('nndepthrange=', np.ptp(depth), np.max(depth), np.min(depth) )
+
     im_depth = depth# np.max(unwrapdata)*255)
     cv2.imwrite(folder + 'depth.png', im_depth)
     np.save(folder+'depth.npy' ,im_depth , allow_pickle=False)
