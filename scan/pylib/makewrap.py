@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 import time
-import pyntcloud
+# import pyntcloud
 import math
 import os.path
 from os import path

@@ -10,19 +10,19 @@ import cv2
 from matplotlib.pyplot import *
 from numpy.linalg import norm
 import pylab
-import pygame
+# import pygame
 
 
 
 #!!!! Images are rotated in make stamps
 
-width = 170
-height = 170
-periods = 2
-hf_periods = 39
-stampwidth = 145
-stampheight = 145
-stampborder = 7
+width = 300
+height = 300
+periods = 2.667
+hf_periods = 52
+stampwidth = 290
+stampheight = 290
+stampborder = 1
 widthcount = 1
 heightcount =1
 squares = widthcount*heightcount

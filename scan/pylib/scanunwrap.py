@@ -334,7 +334,7 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/stitch3'
+    folder = '/home/samir/Desktop/blender/pycode/headscans'
     count=  len(os.listdir(folder))
 
     unw(folder, count)
