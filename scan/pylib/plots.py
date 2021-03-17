@@ -69,7 +69,7 @@ def makemonohigh(folder):
 x = range(160)
 for i in range(5):
     # folder1 = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/render'+ str(i)
-    folder1 = '/home/samir/Desktop/blender/pycode/160spheres/render'+str(i)
+    folder1 = '/home/samir/Desktop/blender/pycode/stitch/render'+str(i)
 
     monohigh = np.zeros((H, W), dtype=np.float64)
 
