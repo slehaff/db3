@@ -398,10 +398,10 @@ def mydepth():
 
 def myrun():
     # folder = '/home/samir/db3/scan/static/scan_folder/scan_im_folder/'
-    folder = '/home/samir/Desktop/blender/pycode/blscans'
+    folder = '/home/samir/Desktop/blender/pycode/30scans'
     count=  len(os.listdir(folder))
 
-    # unw(folder, count)
+    unw(folder, count)
     depth(folder, count, 400)
     makeclouds(folder, count)
     
