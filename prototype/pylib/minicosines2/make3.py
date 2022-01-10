@@ -15,12 +15,12 @@ heightcount = 3
 squares = 12
 
 def make_gamma(w, h):
-    g = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230]
+    g = [0, 20, 40, 60,  80,  100,  120,  140,  160,  180,  200,  220]
     ima = np.full((w + 10, h + 10), 255)
     l = np.zeros(w)
-    for i in range(23):
-        for j in range(round(w/24)):
-            l[i*round(w/24) + j] = g[i]
+    for i in range(11):
+        for j in range(round(w/12)):
+            l[i*round(w/12) + j] = g[i]
     for k in range(h):
         ima[5:-5, k+5] = l
     # ima = np.transpose(ima)
