@@ -407,7 +407,7 @@ def myrun():
     
     # getplys(folder)
 
-myrun()
+# myrun()
 
 
 def debug():
